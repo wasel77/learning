@@ -21,7 +21,10 @@ type MigrationResult = {
 
 export function AdminBunnyMigrationPanel({ initialRemaining }: { initialRemaining: number }) {
   const [running, setRunning] = useState(false);
-  const [result, setResult] = useState<MigrationResult>({ remaining: initialRemaining });
+  const [result, setResult] = useState<MigrationResult>({
+    complete: initialRemaining === 0,
+    remaining: initialRemaining,
+  });
   const requestInFlight = useRef(false);
 
   useEffect(() => {
