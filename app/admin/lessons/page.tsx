@@ -21,14 +21,6 @@ export default async function AdminLessonsPage() {
       <p className="mt-2 text-sm text-slate-400">
         أضف الدروس من تبويب الدروس، ثم اربط أسئلة “اختبر نفسك” بكل درس من تبويب أسئلة الدروس.
       </p>
-      <form action="/api/admin/bunny-transfer-test" method="post" className="mt-4">
-        <button
-          type="submit"
-          className="rounded-xl bg-amber-500 px-4 py-2 text-sm font-black text-slate-950 hover:bg-amber-400"
-        >
-          تشغيل اختبار نقل الدرس الأول (الجزء الثاني) إلى Bunny
-        </button>
-      </form>
       <AdminLessonsManager
         lessons={(lessonsResult.data ?? []) as Lesson[]}
         lessonQuestions={(questionsResult.data ?? []) as LessonQuestion[]}
