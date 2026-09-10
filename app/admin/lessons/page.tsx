@@ -1,4 +1,5 @@
 import { AdminLessonsManager } from "@/components/AdminLessonsManager";
+import { AdminBunnyMigrationPanel } from "@/components/AdminBunnyMigrationPanel";
 import { AppShell } from "@/components/AppShell";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/data";
@@ -14,6 +15,8 @@ export default async function AdminLessonsPage() {
       .select("*, options:lesson_question_options(*), lesson:lessons(id,title,level)")
       .order("question_order"),
   ]);
+  const lessons = (lessonsResult.data ?? []) as Lesson[];
+  const unlinkedLessons = lessons.filter((lesson) => !lesson.bunny_video_id).length;
 
   return (
     <AppShell profile={profile}>
@@ -21,8 +24,9 @@ export default async function AdminLessonsPage() {
       <p className="mt-2 text-sm text-slate-400">
         أضف الدروس من تبويب الدروس، ثم اربط أسئلة “اختبر نفسك” بكل درس من تبويب أسئلة الدروس.
       </p>
+      <AdminBunnyMigrationPanel initialRemaining={unlinkedLessons} />
       <AdminLessonsManager
-        lessons={(lessonsResult.data ?? []) as Lesson[]}
+        lessons={lessons}
         lessonQuestions={(questionsResult.data ?? []) as LessonQuestion[]}
       />
     </AppShell>
