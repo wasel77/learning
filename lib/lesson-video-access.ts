@@ -4,8 +4,7 @@ import { getAllowedLevels } from "@/lib/utils";
 
 export type AccessibleLesson = {
   id: string;
-  bunny_video_id: string | null;
-  drive_file_id: string;
+  bunny_video_id: string;
   level: string;
   lesson_order: number;
   title: string;
@@ -31,7 +30,7 @@ export async function getAccessibleLesson(lessonId: string): Promise<LessonAcces
       .maybeSingle<{ level: string; is_active: boolean }>(),
     supabase
       .from("lessons")
-      .select("id,title,bunny_video_id,drive_file_id,level,lesson_order")
+      .select("id,title,bunny_video_id,level,lesson_order")
       .eq("id", lessonId)
       .eq("is_active", true)
       .maybeSingle<AccessibleLesson>(),
@@ -40,7 +39,7 @@ export async function getAccessibleLesson(lessonId: string): Promise<LessonAcces
   if (!profile || profile.is_active === false) {
     return { error: "Account disabled", status: 403 };
   }
-  if (!lesson) return { error: "Lesson not found", status: 404 };
+  if (!lesson?.bunny_video_id) return { error: "Lesson not found", status: 404 };
 
   const allowedLevels = getAllowedLevels(profile.level);
   if (!allowedLevels.includes(lesson.level)) {

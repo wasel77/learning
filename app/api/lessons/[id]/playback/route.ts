@@ -22,10 +22,6 @@ export async function GET(
     return jsonResponse({ error: access.error }, access.status);
   }
 
-  if (!access.lesson.bunny_video_id) {
-    return jsonResponse({ error: "Bunny playback is not configured for this lesson" }, 404);
-  }
-
   try {
     const url = createBunnyEmbedUrl(access.lesson.bunny_video_id);
     return jsonResponse({ provider: "bunny", url });

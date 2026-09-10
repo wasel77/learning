@@ -71,7 +71,11 @@ export default async function LessonDetailPage(
     .eq("is_active", true)
     .single();
 
-  if (!lesson || !getAllowedLevels(profile.level).includes(lesson.level)) {
+  if (
+    !lesson ||
+    !lesson.bunny_video_id ||
+    !getAllowedLevels(profile.level).includes(lesson.level)
+  ) {
     notFound();
   }
 
@@ -162,13 +166,11 @@ export default async function LessonDetailPage(
         <LessonContentTabs
           lessonId={lesson.id}
           title={lesson.title}
-          driveFileId={lesson.drive_file_id}
           durationMinutes={lesson.duration_minutes}
           summary={lesson.summary}
           summaryLinks={summaryLinks}
           vocabulary={vocabulary}
           initialTab={getInitialTab(searchParams.tab)}
-          videoProvider={lesson.bunny_video_id ? "bunny" : "drive"}
         />
 
         <Card className="flex flex-wrap items-center justify-between gap-4 p-6">

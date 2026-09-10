@@ -12,13 +12,11 @@ type LessonTab = "video" | "vocabulary" | "summary" | "quiz";
 type LessonContentTabsProps = {
   lessonId: string;
   title: string;
-  driveFileId: string;
   durationMinutes: number | null;
   summary: string | null;
   summaryLinks: LessonSummaryLink[];
   vocabulary: LessonVocabularyItem[];
   initialTab?: Exclude<LessonTab, "quiz">;
-  videoProvider?: "drive" | "bunny";
 };
 
 const tabs = [
@@ -31,13 +29,11 @@ const tabs = [
 export function LessonContentTabs({
   lessonId,
   title,
-  driveFileId,
   durationMinutes,
   summary,
   summaryLinks,
   vocabulary,
   initialTab = "video",
-  videoProvider = "drive",
 }: LessonContentTabsProps) {
   const [activeTab, setActiveTab] = useState<LessonTab>(initialTab);
 
@@ -94,9 +90,7 @@ export function LessonContentTabs({
             <div className="-mx-3 sm:mx-0">
               <LessonPlayer
                 lessonId={lessonId}
-                driveFileId={driveFileId}
                 title={title}
-                videoProvider={videoProvider}
               />
             </div>
           </div>
