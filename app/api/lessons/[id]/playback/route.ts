@@ -22,12 +22,12 @@ export async function GET(
     return jsonResponse({ error: access.error }, access.status);
   }
 
-  if (!hasBunnyVideo(access.lesson.title)) {
+  if (!hasBunnyVideo(access.lesson.id)) {
     return jsonResponse({ error: "Bunny playback is not configured for this lesson" }, 404);
   }
 
   try {
-    const url = createBunnyEmbedUrl(access.lesson.title);
+    const url = createBunnyEmbedUrl(access.lesson.id);
     if (!url) return jsonResponse({ error: "Bunny playback is not configured" }, 404);
     return jsonResponse({ provider: "bunny", url });
   } catch {

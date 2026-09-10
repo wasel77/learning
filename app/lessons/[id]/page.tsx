@@ -169,7 +169,7 @@ export default async function LessonDetailPage(
           summaryLinks={summaryLinks}
           vocabulary={vocabulary}
           initialTab={getInitialTab(searchParams.tab)}
-          videoProvider={hasBunnyVideo(lesson.title) ? "bunny" : "drive"}
+          videoProvider={hasBunnyVideo(lesson.id) ? "bunny" : "drive"}
         />
 
         <Card className="flex flex-wrap items-center justify-between gap-4 p-6">
