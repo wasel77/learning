@@ -41,6 +41,7 @@ export type Lesson = {
   summary_links: LessonSummaryLink[] | null;
   vocabulary: LessonVocabularyItem[] | null;
   drive_file_id: string;
+  bunny_video_id: string | null;
   package_access: ContentPackageScope;
   lesson_order: number;
   duration_minutes: number | null;

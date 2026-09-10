@@ -261,6 +261,12 @@ export function AdminForm({
               defaultValue={lesson?.drive_file_id}
               required
             />
+            <Input
+              name="bunny_video_id"
+              placeholder="Bunny Video ID (اختياري)"
+              defaultValue={lesson?.bunny_video_id ?? ""}
+              inputMode="text"
+            />
             <LevelSelect defaultValue={lesson?.level ?? "beginner"} />
             <PackageScopeSelect defaultValue={lesson?.package_access ?? "both"} />
             <Input

@@ -458,9 +458,18 @@ export async function saveLesson(
     return { error: "أدخل عنوان ورابط صحيح لكل رابط في الملخص" };
   }
 
+  const bunnyVideoId = String(formData.get("bunny_video_id") ?? "").trim();
+  if (
+    bunnyVideoId &&
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(bunnyVideoId)
+  ) {
+    return { error: "أدخل Bunny Video ID صحيح" };
+  }
+
   const payload = {
     title: String(formData.get("title") ?? "").trim(),
     drive_file_id: String(formData.get("drive_file_id") ?? "").trim(),
+    bunny_video_id: bunnyVideoId || null,
     package_access: String(formData.get("package_access") ?? "both"),
     level: String(formData.get("level") ?? "beginner"),
     lesson_order: Number(formData.get("lesson_order") ?? 1),

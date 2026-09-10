@@ -62,12 +62,17 @@ create table public.lessons (
   summary_links jsonb not null default '[]'::jsonb,
   vocabulary jsonb not null default '[]'::jsonb,
   drive_file_id text not null,
+  bunny_video_id uuid,
   package_access public.content_package_scope not null default 'both',
   lesson_order integer not null default 1,
   duration_minutes integer,
   is_active boolean not null default true,
   created_at timestamptz not null default now()
 );
+
+create unique index lessons_bunny_video_id_unique
+on public.lessons (bunny_video_id)
+where bunny_video_id is not null;
 
 create table public.lesson_progress (
   id uuid primary key default gen_random_uuid(),

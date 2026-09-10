@@ -2,20 +2,9 @@ import "server-only";
 
 import { createHash } from "node:crypto";
 
-const BUNNY_VIDEO_BY_LESSON_ID: Readonly<Record<string, string>> = {
-  "a9c7c08c-7eb6-4b8d-af46-0f1b2d0e7a70": "0078afc6-491e-43a6-93b1-95dfafa80d0a",
-};
-
 const EMBED_TOKEN_TTL_SECONDS = 15 * 60;
 
-export function hasBunnyVideo(lessonId: string) {
-  return Object.hasOwn(BUNNY_VIDEO_BY_LESSON_ID, lessonId);
-}
-
-export function createBunnyEmbedUrl(lessonId: string) {
-  const videoId = BUNNY_VIDEO_BY_LESSON_ID[lessonId];
-  if (!videoId) return null;
-
+export function createBunnyEmbedUrl(videoId: string) {
   const libraryId = process.env.BUNNY_STREAM_LIBRARY_ID;
   const tokenKey = process.env.BUNNY_STREAM_TOKEN_KEY;
   if (!libraryId || !tokenKey) {

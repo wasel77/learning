@@ -4,6 +4,7 @@ import { getAllowedLevels } from "@/lib/utils";
 
 export type AccessibleLesson = {
   id: string;
+  bunny_video_id: string | null;
   drive_file_id: string;
   level: string;
   lesson_order: number;
@@ -30,7 +31,7 @@ export async function getAccessibleLesson(lessonId: string): Promise<LessonAcces
       .maybeSingle<{ level: string; is_active: boolean }>(),
     supabase
       .from("lessons")
-      .select("id,title,drive_file_id,level,lesson_order")
+      .select("id,title,bunny_video_id,drive_file_id,level,lesson_order")
       .eq("id", lessonId)
       .eq("is_active", true)
       .maybeSingle<AccessibleLesson>(),

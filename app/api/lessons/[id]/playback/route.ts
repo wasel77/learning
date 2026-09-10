@@ -1,4 +1,4 @@
-import { createBunnyEmbedUrl, hasBunnyVideo } from "@/lib/bunny-stream";
+import { createBunnyEmbedUrl } from "@/lib/bunny-stream";
 import { getAccessibleLesson } from "@/lib/lesson-video-access";
 
 export const runtime = "nodejs";
@@ -22,13 +22,12 @@ export async function GET(
     return jsonResponse({ error: access.error }, access.status);
   }
 
-  if (!hasBunnyVideo(access.lesson.id)) {
+  if (!access.lesson.bunny_video_id) {
     return jsonResponse({ error: "Bunny playback is not configured for this lesson" }, 404);
   }
 
   try {
-    const url = createBunnyEmbedUrl(access.lesson.id);
-    if (!url) return jsonResponse({ error: "Bunny playback is not configured" }, 404);
+    const url = createBunnyEmbedUrl(access.lesson.bunny_video_id);
     return jsonResponse({ provider: "bunny", url });
   } catch {
     return jsonResponse({ error: "Video playback is temporarily unavailable" }, 503);

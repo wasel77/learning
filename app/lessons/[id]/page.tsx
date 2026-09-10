@@ -17,7 +17,6 @@ import { isLessonUnlocked } from "@/lib/lesson-locks";
 import { createClient } from "@/lib/supabase/server";
 import type { LessonSummaryLink, LessonVocabularyItem } from "@/lib/types";
 import { getAllowedLevels } from "@/lib/utils";
-import { hasBunnyVideo } from "@/lib/bunny-stream";
 
 function normalizeVocabulary(value: unknown): LessonVocabularyItem[] {
   if (!Array.isArray(value)) return [];
@@ -169,7 +168,7 @@ export default async function LessonDetailPage(
           summaryLinks={summaryLinks}
           vocabulary={vocabulary}
           initialTab={getInitialTab(searchParams.tab)}
-          videoProvider={hasBunnyVideo(lesson.id) ? "bunny" : "drive"}
+          videoProvider={lesson.bunny_video_id ? "bunny" : "drive"}
         />
 
         <Card className="flex flex-wrap items-center justify-between gap-4 p-6">
