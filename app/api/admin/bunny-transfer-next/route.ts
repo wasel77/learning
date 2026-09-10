@@ -80,7 +80,13 @@ export async function POST() {
     const { libraryId, apiKey } = config();
     const title = `[wasel:${current.lesson.id}] ${current.lesson.title}`;
     const existing = await findVideo(libraryId, apiKey, title);
-    if (existing) return response({ alreadyStarted: true, lessonId: current.lesson.id, title: current.lesson.title, ...publicStatus(existing) });
+    if (existing) {
+      if (existing.status === 4 && existing.encodeProgress === 100) {
+        await current.supabase.from("lessons").update({ bunny_video_id: existing.guid }).eq("id", current.lesson.id).is("bunny_video_id", null);
+        return response({ alreadyStarted: true, linked: true, lessonId: current.lesson.id, title: current.lesson.title, ...publicStatus(existing) });
+      }
+      return response({ alreadyStarted: true, linked: false, lessonId: current.lesson.id, title: current.lesson.title, ...publicStatus(existing) });
+    }
     const sourceUrl = new URL("https://drive.usercontent.google.com/download");
     sourceUrl.searchParams.set("id", fileId(current.lesson.drive_file_id));
     sourceUrl.searchParams.set("export", "view");
