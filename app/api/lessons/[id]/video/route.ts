@@ -1,6 +1,4 @@
-import { isLessonUnlocked } from "@/lib/lesson-locks";
-import { createClient } from "@/lib/supabase/server";
-import { getAllowedLevels } from "@/lib/utils";
+import { getAccessibleLesson } from "@/lib/lesson-video-access";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -69,44 +67,9 @@ export async function GET(
   context: RouteContext<"/api/lessons/[id]/video">,
 ) {
   const { id: lessonId } = await context.params;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) return errorResponse("Unauthorized", 401);
-
-  const [{ data: profile }, { data: lesson }] = await Promise.all([
-    supabase
-      .from("profiles")
-      .select("level,is_active")
-      .eq("id", user.id)
-      .maybeSingle<{ level: string; is_active: boolean }>(),
-    supabase
-      .from("lessons")
-      .select("id,drive_file_id,level,lesson_order")
-      .eq("id", lessonId)
-      .eq("is_active", true)
-      .maybeSingle(),
-  ]);
-
-  if (!profile || profile.is_active === false) return errorResponse("Account disabled", 403);
-  if (!lesson) return errorResponse("Lesson not found", 404);
-
-  const allowedLevels = getAllowedLevels(profile.level);
-  if (!allowedLevels.includes(lesson.level)) return errorResponse("Lesson not found", 404);
-
-  const { data: availableLessons } = await supabase
-    .from("lessons")
-    .select("id,level,lesson_order,lesson_progress(completed,completed_at)")
-    .in("level", allowedLevels)
-    .eq("is_active", true)
-    .order("level")
-    .order("lesson_order");
-
-  if (!isLessonUnlocked(lesson.id, availableLessons ?? [])) {
-    return errorResponse("Lesson is locked", 403);
-  }
+  const access = await getAccessibleLesson(lessonId);
+  if ("error" in access) return errorResponse(access.error, access.status);
+  const { lesson } = access;
 
   const fileId = getDriveFileId(lesson.drive_file_id);
   if (!fileId) return errorResponse("Invalid Google Drive file ID", 422);
