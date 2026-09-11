@@ -7,7 +7,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { calculateLevel, formatArabicDate, parseSaudiDateTimeToUtcIso } from "@/lib/utils";
 import { getProfile, requireAdmin, requireUser } from "@/lib/data";
-import { getAllowedLevels, getNextLevel } from "@/lib/learning-path";
+import { getAllowedLevels, getLearningPath, getNextLevel } from "@/lib/learning-path";
 import type {
   ContentPackageScope,
   LessonQuestion,
@@ -153,12 +153,30 @@ export async function deleteUserAccount(userId: string): Promise<ActionState> {
 export async function startBeginner() {
   const user = await requireUser();
   const supabase = await createClient();
-  await supabase
+  const { data: profile } = await supabase
     .from("profiles")
-    .update({ level: "beginner", has_completed_placement_test: false })
+    .select("subscription_package")
+    .eq("id", user.id)
+    .single<{ subscription_package: SubscriptionPackage }>();
+  const firstLevel = getLearningPath(profile?.subscription_package ?? "bronze")[0] ?? "beginner";
+  const { error } = await supabase
+    .from("profiles")
+    .update({ level: firstLevel, has_completed_placement_test: false })
     .eq("id", user.id);
+  if (error) {
+    throw new Error("تعذر حفظ نقطة البداية");
+  }
+  const { data: savedProfile, error: verifyError } = await supabase
+    .from("profiles")
+    .select("level")
+    .eq("id", user.id)
+    .single<{ level: Level | null }>();
+  if (verifyError || savedProfile?.level !== firstLevel) {
+    throw new Error("تعذر تأكيد نقطة البداية");
+  }
   revalidatePath("/dashboard");
-  redirect("/dashboard");
+  revalidatePath("/lessons");
+  redirect("/lessons");
 }
 
 export async function savePlacementAttempt(answers: Record<string, string>) {
