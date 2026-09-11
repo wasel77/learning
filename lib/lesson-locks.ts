@@ -1,12 +1,7 @@
-import type { Lesson, Level } from "@/lib/types";
+import type { Lesson } from "@/lib/types";
+import { getLevelOrder } from "@/lib/learning-path";
 
 type LockableLesson = Pick<Lesson, "id" | "level" | "lesson_order" | "lesson_progress">;
-
-const levelOrder: Record<Level, number> = {
-  beginner: 0,
-  advanced: 1,
-  expert: 2,
-};
 
 export function isLessonCompleted(lesson: LockableLesson) {
   return lesson.lesson_progress?.some((progress) => progress.completed) ?? false;
@@ -14,7 +9,7 @@ export function isLessonCompleted(lesson: LockableLesson) {
 
 export function sortLessonsByPath<T extends Pick<Lesson, "level" | "lesson_order">>(lessons: T[]) {
   return [...lessons].sort((first, second) => {
-    const byLevel = levelOrder[first.level] - levelOrder[second.level];
+    const byLevel = getLevelOrder(first.level) - getLevelOrder(second.level);
     if (byLevel !== 0) return byLevel;
     return first.lesson_order - second.lesson_order;
   });

@@ -7,8 +7,8 @@ import { LevelBadge } from "@/components/LevelBadge";
 import { buttonClassName } from "@/components/ui/button";
 import { getProfile } from "@/lib/data";
 import { isLessonUnlocked } from "@/lib/lesson-locks";
+import { getAllowedLevels } from "@/lib/learning-path";
 import { createClient } from "@/lib/supabase/server";
-import { getAllowedLevels } from "@/lib/utils";
 import type { LessonQuestion } from "@/lib/types";
 
 export default async function LessonQuizPage(props: PageProps<"/lessons/[id]/quiz">) {
@@ -22,12 +22,13 @@ export default async function LessonQuizPage(props: PageProps<"/lessons/[id]/qui
     .eq("is_active", true)
     .single();
 
-  if (!lesson || !getAllowedLevels(profile.level).includes(lesson.level)) notFound();
+  const allowedLevels = getAllowedLevels(profile.level, profile.subscription_package);
+  if (!lesson || !allowedLevels.includes(lesson.level)) notFound();
 
   const { data: availableLessons } = await supabase
     .from("lessons")
     .select("id,level,lesson_order,lesson_progress(completed,completed_at)")
-    .in("level", getAllowedLevels(profile.level))
+    .in("level", allowedLevels)
     .eq("is_active", true)
     .order("level")
     .order("lesson_order");

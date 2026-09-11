@@ -1,13 +1,13 @@
 import { AppShell } from "@/components/AppShell";
 import { LessonLevelTabs } from "@/components/LessonLevelTabs";
 import { getLessonsForLevel, getProfile } from "@/lib/data";
-import { getAllowedLevels } from "@/lib/utils";
+import { getAllowedLevels } from "@/lib/learning-path";
 import type { Level } from "@/lib/types";
 
 export default async function LessonsPage() {
   const profile = await getProfile();
   const lessons = await getLessonsForLevel(profile.level);
-  const levels = getAllowedLevels(profile.level) as Level[];
+  const levels = getAllowedLevels(profile.level, profile.subscription_package) as Level[];
 
   return (
     <AppShell profile={profile}>

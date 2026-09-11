@@ -8,8 +8,7 @@ import { Card } from "@/components/ui/card";
 import { deleteLesson } from "@/lib/actions";
 import { cn, getContentPackageScopeLabel, getLevelLabel } from "@/lib/utils";
 import type { Lesson, Level } from "@/lib/types";
-
-const levels: Level[] = ["beginner", "advanced", "expert"];
+import { levels } from "@/lib/learning-path";
 
 export function AdminLessonTabs({ lessons }: { lessons: Lesson[] }) {
   const [activeLevel, setActiveLevel] = useState<Level>("beginner");

@@ -3,7 +3,7 @@ import { VocabularyChallengeClient } from "@/components/VocabularyChallengeClien
 import { getProfile } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
 import type { LessonVocabularyItem } from "@/lib/types";
-import { getAllowedLevels } from "@/lib/utils";
+import { getAllowedLevels } from "@/lib/learning-path";
 
 function normalizeVocabulary(value: unknown): LessonVocabularyItem[] {
   if (!Array.isArray(value)) return [];
@@ -21,7 +21,7 @@ function normalizeVocabulary(value: unknown): LessonVocabularyItem[] {
 export default async function ChallengePage() {
   const profile = await getProfile();
   const supabase = await createClient();
-  const levels = getAllowedLevels(profile.level);
+  const levels = getAllowedLevels(profile.level, profile.subscription_package);
   const { data } = await supabase
     .from("lessons")
     .select("title,vocabulary")

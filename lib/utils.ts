@@ -61,6 +61,8 @@ export function formatArabicDate(
 }
 
 export function getLevelLabel(level?: string | null) {
+  if (level === "strategies") return "استراتيجيات";
+  if (level === "professional") return "محترف";
   if (level === "expert") return "خبير";
   if (level === "advanced") return "متقدم";
   if (!level) return "غير محدد";
@@ -75,12 +77,6 @@ export function getContentPackageScopeLabel(value?: string | null) {
   if (value === "diamond") return "الماسية";
   if (value === "bronze") return "البرونزية";
   return "كلا الباقتين";
-}
-
-export function getAllowedLevels(level?: string | null) {
-  if (level === "expert") return ["beginner", "advanced", "expert"];
-  if (level === "advanced") return ["beginner", "advanced"];
-  return ["beginner"];
 }
 
 export function calculateLevel(percentage: number) {

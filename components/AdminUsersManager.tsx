@@ -272,6 +272,8 @@ export function AdminUsersManager({
             <option value="beginner">مبتدئ</option>
             <option value="advanced">متقدم</option>
             <option value="expert">خبير</option>
+            <option value="professional">محترف</option>
+            <option value="strategies">استراتيجيات</option>
           </select>
         </div>
         <div className="self-end rounded-xl bg-slate-950/70 px-4 py-2.5 text-sm font-bold text-slate-300">

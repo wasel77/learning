@@ -1,4 +1,10 @@
-create type public.user_level as enum ('beginner', 'advanced', 'expert');
+create type public.user_level as enum (
+  'beginner',
+  'advanced',
+  'expert',
+  'professional',
+  'strategies'
+);
 create type public.user_role as enum ('student', 'admin');
 create type public.subscription_package as enum ('bronze', 'diamond');
 create type public.content_package_scope as enum ('bronze', 'diamond', 'both');
@@ -228,10 +234,24 @@ as $$
     where profile.id = (select auth.uid())
       and profile.is_active = true
       and profile.level is not null
-      and case profile.level
-        when 'expert' then true
-        when 'advanced' then requested_level in ('beginner', 'advanced')
-        else requested_level = 'beginner'
+      and case profile.subscription_package
+        when 'bronze' then case profile.level
+          when 'strategies' then requested_level in (
+            'beginner', 'advanced', 'expert', 'strategies'
+          )
+          when 'expert' then requested_level in ('beginner', 'advanced', 'expert')
+          when 'advanced' then requested_level in ('beginner', 'advanced')
+          else requested_level = 'beginner'
+        end
+        when 'diamond' then case profile.level
+          when 'strategies' then true
+          when 'professional' then requested_level in (
+            'beginner', 'advanced', 'expert', 'professional'
+          )
+          when 'expert' then requested_level in ('beginner', 'advanced', 'expert')
+          when 'advanced' then requested_level in ('beginner', 'advanced')
+          else requested_level = 'beginner'
+        end
       end
   );
 $$;

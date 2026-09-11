@@ -2,7 +2,7 @@ import { cache } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { applyLessonLocks } from "@/lib/lesson-locks";
-import { getAllowedLevels } from "@/lib/utils";
+import { getAllowedLevels } from "@/lib/learning-path";
 import type { Level, Profile } from "@/lib/types";
 
 export const getUser = cache(async () => {
@@ -48,7 +48,7 @@ export async function requireAdmin() {
 export async function getDashboardData() {
   const profile = await getProfile();
   const supabase = await createClient();
-  const levels = getAllowedLevels(profile.level);
+  const levels = getAllowedLevels(profile.level, profile.subscription_package);
 
   const [attempt, lessons, live, notification, progressRows] = await Promise.all([
     supabase
@@ -115,7 +115,7 @@ export async function getLessonsForLevel(level: Level | null) {
   const { data } = await supabase
     .from("lessons")
     .select("*, lesson_progress(completed, completed_at)")
-    .in("level", getAllowedLevels(level ?? profile.level))
+    .in("level", getAllowedLevels(level ?? profile.level, profile.subscription_package))
     .eq("is_active", true)
     .order("level")
     .order("lesson_order");

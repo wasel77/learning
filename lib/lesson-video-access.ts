@@ -1,11 +1,12 @@
 import { isLessonUnlocked } from "@/lib/lesson-locks";
+import { getAllowedLevels } from "@/lib/learning-path";
 import { createClient } from "@/lib/supabase/server";
-import { getAllowedLevels } from "@/lib/utils";
+import type { Level, SubscriptionPackage } from "@/lib/types";
 
 export type AccessibleLesson = {
   id: string;
   bunny_video_id: string;
-  level: string;
+  level: Level;
   lesson_order: number;
   title: string;
 };
@@ -25,9 +26,13 @@ export async function getAccessibleLesson(lessonId: string): Promise<LessonAcces
   const [{ data: profile }, { data: lesson }] = await Promise.all([
     supabase
       .from("profiles")
-      .select("level,is_active")
+      .select("level,is_active,subscription_package")
       .eq("id", user.id)
-      .maybeSingle<{ level: string; is_active: boolean }>(),
+      .maybeSingle<{
+        level: Level;
+        is_active: boolean;
+        subscription_package: SubscriptionPackage;
+      }>(),
     supabase
       .from("lessons")
       .select("id,title,bunny_video_id,level,lesson_order")
@@ -41,7 +46,7 @@ export async function getAccessibleLesson(lessonId: string): Promise<LessonAcces
   }
   if (!lesson?.bunny_video_id) return { error: "Lesson not found", status: 404 };
 
-  const allowedLevels = getAllowedLevels(profile.level);
+  const allowedLevels = getAllowedLevels(profile.level, profile.subscription_package);
   if (!allowedLevels.includes(lesson.level)) {
     return { error: "Lesson not found", status: 404 };
   }

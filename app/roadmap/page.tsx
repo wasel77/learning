@@ -12,9 +12,9 @@ import { AppShell } from "@/components/AppShell";
 import { Card } from "@/components/ui/card";
 import { getProfile } from "@/lib/data";
 import { applyLessonLocks, isLessonCompleted } from "@/lib/lesson-locks";
+import { getAllowedLevels, getLearningPath } from "@/lib/learning-path";
 import { createClient } from "@/lib/supabase/server";
 import type { Level } from "@/lib/types";
-import { getAllowedLevels } from "@/lib/utils";
 
 type RoadmapLesson = {
   id: string;
@@ -58,6 +58,22 @@ const levelConfigs: LevelConfig[] = [
     description: "استراتيجيات متقدمة وإدارة احترافية",
     accent: "bg-violet-500",
     glow: "from-violet-500/20",
+  },
+  {
+    level: "professional",
+    code: "B2",
+    title: "المحترف",
+    description: "تطبيق احترافي وتطوير أسلوب التداول",
+    accent: "bg-amber-400",
+    glow: "from-amber-500/20",
+  },
+  {
+    level: "strategies",
+    code: "C1",
+    title: "الاستراتيجيات",
+    description: "استراتيجيات عملية متقدمة وخطط تطبيقها",
+    accent: "bg-rose-400",
+    glow: "from-rose-500/20",
   },
 ];
 
@@ -108,9 +124,16 @@ function SummaryTile({
 export default async function RoadmapPage() {
   const profile = await getProfile();
   const supabase = await createClient();
-  const allowedLevels = getAllowedLevels(profile.level) as Level[];
+  const learningPath = getLearningPath(profile.subscription_package);
+  const pathLevelConfigs = learningPath.map(
+    (level) => levelConfigs.find((config) => config.level === level)!,
+  );
+  const allowedLevels = getAllowedLevels(
+    profile.level,
+    profile.subscription_package,
+  ) as Level[];
   const currentLevel = profile.level ?? "beginner";
-  const currentLevelIndex = levelConfigs.findIndex(
+  const currentLevelIndex = pathLevelConfigs.findIndex(
     (config) => config.level === currentLevel,
   );
 
@@ -136,8 +159,8 @@ export default async function RoadmapPage() {
   const currentProgress = percent(currentCompleted, currentLessons.length);
   const lessonsLeft = Math.max(0, currentLessons.length - currentCompleted);
   const currentConfig =
-    levelConfigs.find((config) => config.level === currentLevel) ??
-    levelConfigs[0];
+    pathLevelConfigs.find((config) => config.level === currentLevel) ??
+    pathLevelConfigs[0];
   const weeklyLessons = chunkLessons(currentLessons, 7);
 
   return (
@@ -156,7 +179,7 @@ export default async function RoadmapPage() {
               مسارك التعليمي من المستوى الحالي إلى آخر مستوى متاح في المنصة.
             </p>
             <p className="mt-2 text-sm font-bold text-sky-300">
-              {levelConfigs.length} مستويات • {totalLessons} درس • تقدمك الكلي{" "}
+              {pathLevelConfigs.length} مستويات • {totalLessons} درس • تقدمك الكلي{" "}
               {overallProgress}%
             </p>
 
@@ -328,7 +351,7 @@ export default async function RoadmapPage() {
 
         <section className="space-y-5">
           <h2 className="text-3xl font-black text-white">المستويات الأخرى</h2>
-          {levelConfigs
+          {pathLevelConfigs
             .filter((config) => config.level !== currentLevel)
             .map((config) => {
               const levelLessons = lessons.filter(
@@ -338,7 +361,7 @@ export default async function RoadmapPage() {
               const levelProgress = percent(levelCompleted, levelLessons.length);
               const unlocked = allowedLevels.includes(config.level);
               const isFuture =
-                levelConfigs.findIndex((item) => item.level === config.level) >
+                pathLevelConfigs.findIndex((item) => item.level === config.level) >
                 currentLevelIndex;
 
               return (

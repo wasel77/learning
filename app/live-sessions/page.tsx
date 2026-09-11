@@ -8,11 +8,11 @@ import { createClient } from "@/lib/supabase/server";
 import type { LiveSession } from "@/lib/types";
 import {
   formatArabicDate,
-  getAllowedLevels,
   getSaudiDateKey,
   getSaudiDateParts,
   SAUDI_TIME_ZONE,
 } from "@/lib/utils";
+import { getAllowedLevels } from "@/lib/learning-path";
 
 const weekDays = [
   "الأحد",
@@ -150,7 +150,7 @@ export default async function LiveSessionsPage() {
   const profile = await getProfile();
   const supabase = await createClient();
   const now = new Date();
-  const levels = getAllowedLevels(profile.level);
+  const levels = getAllowedLevels(profile.level, profile.subscription_package);
   const { data } = await supabase
     .from("live_sessions")
     .select("*")

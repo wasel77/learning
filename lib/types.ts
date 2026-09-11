@@ -1,4 +1,4 @@
-export type Level = "beginner" | "advanced" | "expert";
+export type Level = "beginner" | "advanced" | "expert" | "professional" | "strategies";
 export type Role = "student" | "admin";
 export type SubscriptionPackage = "bronze" | "diamond";
 export type ContentPackageScope = SubscriptionPackage | "both";

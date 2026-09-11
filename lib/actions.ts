@@ -7,6 +7,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { calculateLevel, formatArabicDate, parseSaudiDateTimeToUtcIso } from "@/lib/utils";
 import { getProfile, requireAdmin, requireUser } from "@/lib/data";
+import { getAllowedLevels, getNextLevel } from "@/lib/learning-path";
 import type {
   ContentPackageScope,
   LessonQuestion,
@@ -16,11 +17,6 @@ import type {
 } from "@/lib/types";
 
 type ActionState = { error?: string; success?: string };
-
-const nextLevelByLevel: Partial<Record<Level, Level>> = {
-  beginner: "advanced",
-  advanced: "expert",
-};
 
 function isSubscriptionPackage(value: string): value is SubscriptionPackage {
   return value === "bronze" || value === "diamond";
@@ -253,9 +249,9 @@ export async function submitLessonQuiz(lessonId: string, answers: Record<string,
   const [profileResult, lessonResult, questionsResult] = await Promise.all([
     supabase
       .from("profiles")
-      .select("level")
+      .select("level,subscription_package")
       .eq("id", user.id)
-      .single<{ level: Level | null }>(),
+      .single<{ level: Level | null; subscription_package: SubscriptionPackage }>(),
     supabase
       .from("lessons")
       .select("id,level")
@@ -313,7 +309,10 @@ export async function submitLessonQuiz(lessonId: string, answers: Record<string,
   let promotedLevel: Level | null = null;
   const currentLevel = profileResult.data?.level;
   const lessonLevel = lessonResult.data.level;
-  const nextLevel = currentLevel ? nextLevelByLevel[currentLevel] : null;
+  const subscriptionPackage = profileResult.data?.subscription_package;
+  const nextLevel = currentLevel && subscriptionPackage
+    ? getNextLevel(currentLevel, subscriptionPackage)
+    : null;
 
   if (shouldComplete && currentLevel && nextLevel && lessonLevel === currentLevel) {
     const { data: currentLevelLessons } = await supabase
@@ -603,33 +602,24 @@ export async function saveLiveSession(_state: ActionState, formData: FormData) {
 
   if (error || !session) return { error: error?.message ?? "تعذر حفظ الحصة" };
 
-  const allowedLevels =
-    session.applies_to_all
-      ? ["beginner", "advanced", "expert"]
-      : session.level === "expert"
-      ? ["expert"]
-      : session.level === "advanced"
-        ? ["advanced", "expert"]
-        : ["beginner", "advanced", "expert"];
-
   let profilesQuery = supabase
     .from("profiles")
-    .select("id")
+    .select("id,level,subscription_package")
     .eq("role", "student")
     .eq("is_active", true);
 
   if (session.package_access !== "both") {
     profilesQuery = profilesQuery.eq("subscription_package", session.package_access);
   }
-  if (!session.applies_to_all) {
-    profilesQuery = profilesQuery.in("level", allowedLevels);
-  }
-
   const { data: profiles } = await profilesQuery;
+  const eligibleProfiles = (profiles ?? []).filter((profile) =>
+    session.applies_to_all ||
+    getAllowedLevels(profile.level, profile.subscription_package).includes(session.level),
+  );
 
-  if (profiles?.length) {
+  if (eligibleProfiles.length) {
     await supabase.from("notifications").insert(
-      profiles.map((profile) => ({
+      eligibleProfiles.map((profile) => ({
         user_id: profile.id,
         title: `حصة مباشرة جديدة: ${session.title}`,
         body: `تمت إضافة حصة مباشرة جديدة تبدأ في ${formatArabicDate(session.start_time)}.`,

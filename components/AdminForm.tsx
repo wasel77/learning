@@ -52,6 +52,8 @@ function LevelSelect({
       <option value="beginner">مبتدئ</option>
       <option value="advanced">متقدم</option>
       <option value="expert">خبير</option>
+      <option value="professional">محترف</option>
+      <option value="strategies">استراتيجيات</option>
     </select>
   );
 }

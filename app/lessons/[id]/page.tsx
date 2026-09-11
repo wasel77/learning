@@ -14,9 +14,9 @@ import { Card } from "@/components/ui/card";
 import { toggleLessonWatched } from "@/lib/actions";
 import { getProfile } from "@/lib/data";
 import { isLessonUnlocked } from "@/lib/lesson-locks";
+import { getAllowedLevels } from "@/lib/learning-path";
 import { createClient } from "@/lib/supabase/server";
 import type { LessonSummaryLink, LessonVocabularyItem } from "@/lib/types";
-import { getAllowedLevels } from "@/lib/utils";
 
 function normalizeVocabulary(value: unknown): LessonVocabularyItem[] {
   if (!Array.isArray(value)) return [];
@@ -74,7 +74,7 @@ export default async function LessonDetailPage(
   if (
     !lesson ||
     !lesson.bunny_video_id ||
-    !getAllowedLevels(profile.level).includes(lesson.level)
+    !getAllowedLevels(profile.level, profile.subscription_package).includes(lesson.level)
   ) {
     notFound();
   }
@@ -82,7 +82,7 @@ export default async function LessonDetailPage(
   const { data: availableLessons } = await supabase
     .from("lessons")
     .select("id,level,lesson_order,lesson_progress(completed,completed_at)")
-    .in("level", getAllowedLevels(profile.level))
+    .in("level", getAllowedLevels(profile.level, profile.subscription_package))
     .eq("is_active", true)
     .order("level")
     .order("lesson_order");
