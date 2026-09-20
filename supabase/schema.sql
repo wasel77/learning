@@ -67,7 +67,8 @@ create table public.lessons (
   summary text,
   summary_links jsonb not null default '[]'::jsonb,
   vocabulary jsonb not null default '[]'::jsonb,
-  drive_file_id text not null,
+  -- Retained only for legacy lesson data; Bunny is the sole playback source.
+  drive_file_id text,
   bunny_video_id uuid,
   package_access public.content_package_scope not null default 'both',
   lesson_order integer not null default 1,

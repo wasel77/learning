@@ -519,8 +519,7 @@ export async function saveLesson(
 
   const payload = {
     title: String(formData.get("title") ?? "").trim(),
-    drive_file_id: String(formData.get("drive_file_id") ?? "").trim(),
-    bunny_video_id: bunnyVideoId || null,
+    bunny_video_id: bunnyVideoId,
     package_access: String(formData.get("package_access") ?? "both"),
     level: String(formData.get("level") ?? "beginner"),
     lesson_order: Number(formData.get("lesson_order") ?? 1),
@@ -535,7 +534,6 @@ export async function saveLesson(
   };
 
   if (!payload.title) return { error: "اكتب عنوان الدرس" };
-  if (!payload.drive_file_id) return { error: "أدخل معرف فيديو Google Drive" };
   if (!isContentPackageScope(payload.package_access)) return { error: "اختر باقة صحيحة للدرس" };
 
   const query = id
