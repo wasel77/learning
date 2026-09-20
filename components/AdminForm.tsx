@@ -258,12 +258,6 @@ export function AdminForm({
               required
             />
             <Input
-              name="drive_file_id"
-              placeholder="Google Drive file ID"
-              defaultValue={lesson?.drive_file_id}
-              required
-            />
-            <Input
               name="bunny_video_id"
               placeholder="Bunny Video ID"
               defaultValue={lesson?.bunny_video_id ?? ""}
