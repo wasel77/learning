@@ -310,8 +310,11 @@ export function AdminUsersManager({
                     <DeleteUserButton user={user} />
                   </div>
                 </div>
-              ) : user.id === currentAdminId ? (
-                <span className="text-xs text-slate-500">حسابك الإداري الحالي</span>
+              ) : user.id === currentAdminId && user.email?.toLowerCase() === "hessakhaleed@gmail.com" ? (
+                <div className="flex max-w-full flex-col items-start gap-2">
+                  <PackageEditor user={user} />
+                  <span className="text-xs text-slate-500">حسابك الإداري الحالي</span>
+                </div>
               ) : (
                 <span className="text-xs text-slate-500">حساب إداري محمي</span>
               )}
@@ -326,3 +329,4 @@ export function AdminUsersManager({
     </>
   );
 }
+
