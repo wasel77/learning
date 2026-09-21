@@ -128,7 +128,6 @@ export async function updateUserSubscriptionPackage(
   formData: FormData,
 ): Promise<ActionState> {
   const admin = await requireAdmin();
-  if (admin.id === userId) return { error: "لا يمكن تعديل باقة حساب المدير الحالي." };
 
   const requestedPackage = String(formData.get("subscription_package") ?? "");
   if (!isSubscriptionPackage(requestedPackage)) {
@@ -139,12 +138,15 @@ export async function updateUserSubscriptionPackage(
     const supabase = createAdminClient();
     const { data: target, error: targetError } = await supabase
       .from("profiles")
-      .select("id,role")
+      .select("id,role,email")
       .eq("id", userId)
-      .maybeSingle<{ id: string; role: string }>();
+      .maybeSingle<{ id: string; role: string; email: string | null }>();
 
     if (targetError || !target) return { error: "الحساب المطلوب غير موجود." };
-    if (target.role !== "student") return { error: "الباقات مخصصة لحسابات الأعضاء فقط." };
+    const isOwnHessaAccount = target.id === admin.id && target.email?.toLowerCase() === "hessakhaleed@gmail.com";
+    if (target.role !== "student" && !isOwnHessaAccount) {
+      return { error: "الباقات مخصصة لحسابات الأعضاء فقط." };
+    }
 
     const { error } = await supabase
       .from("profiles")
@@ -799,3 +801,4 @@ export async function updateProfile(_state: ActionState, formData: FormData): Pr
 export async function updateProfileForm(formData: FormData) {
   await updateProfile({}, formData);
 }
+
