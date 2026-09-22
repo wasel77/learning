@@ -1,7 +1,8 @@
 import { isLessonUnlocked } from "@/lib/lesson-locks";
 import { getAllowedLevels } from "@/lib/learning-path";
 import { createClient } from "@/lib/supabase/server";
-import type { Level, SubscriptionPackage } from "@/lib/types";
+import { canAccessPackageContent } from "@/lib/subscription-links";
+import type { ContentPackageScope, Level, SubscriptionPackage } from "@/lib/types";
 
 export type AccessibleLesson = {
   id: string;
@@ -9,6 +10,7 @@ export type AccessibleLesson = {
   level: Level;
   lesson_order: number;
   title: string;
+  package_access: ContentPackageScope;
 };
 
 export type LessonAccessResult =
@@ -35,7 +37,7 @@ export async function getAccessibleLesson(lessonId: string): Promise<LessonAcces
       }>(),
     supabase
       .from("lessons")
-      .select("id,title,bunny_video_id,level,lesson_order")
+      .select("id,title,bunny_video_id,level,lesson_order,package_access")
       .eq("id", lessonId)
       .eq("is_active", true)
       .maybeSingle<AccessibleLesson>(),
@@ -45,6 +47,9 @@ export async function getAccessibleLesson(lessonId: string): Promise<LessonAcces
     return { error: "Account disabled", status: 403 };
   }
   if (!lesson?.bunny_video_id) return { error: "Lesson not found", status: 404 };
+  if (!canAccessPackageContent(profile.subscription_package, lesson.package_access)) {
+    return { error: "This content is not available for your package", status: 403 };
+  }
 
   const allowedLevels = getAllowedLevels(profile.level, profile.subscription_package);
   if (!allowedLevels.includes(lesson.level)) {

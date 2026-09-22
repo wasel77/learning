@@ -22,6 +22,7 @@ import type {
   PrivateClassCoach,
   PrivateClassReview,
 } from "@/lib/types";
+import { DIAMOND_UPGRADE_URL } from "@/lib/subscription-links";
 
 export default async function PrivateClassesPage() {
   const profile = await getProfile();
@@ -145,6 +146,14 @@ export default async function PrivateClassesPage() {
             <br />
             رقّي للألماسي لفتح الميزة.
           </p>
+          <a
+            href={DIAMOND_UPGRADE_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-5 inline-flex h-11 items-center justify-center rounded-xl bg-amber-300 px-5 text-sm font-black text-amber-950 transition hover:bg-amber-200"
+          >
+            الترقية للألماسية
+          </a>
         </section>
       ) : (
         <>

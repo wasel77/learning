@@ -13,6 +13,7 @@ import {
   SAUDI_TIME_ZONE,
 } from "@/lib/utils";
 import { getAllowedLevels } from "@/lib/learning-path";
+import { canAccessPackageContent } from "@/lib/subscription-links";
 
 const weekDays = [
   "الأحد",
@@ -156,10 +157,16 @@ export default async function LiveSessionsPage() {
     .select("*")
     .eq("is_active", true)
     .gte("end_time", now.toISOString())
-    .or(`applies_to_all.eq.true,level.in.(${levels.join(",")})`)
     .order("start_time");
 
-  const sessions = (data ?? []) as LiveSession[];
+  const sessions = ((data ?? []) as LiveSession[]).map((session) => ({
+    ...session,
+    is_package_locked: !canAccessPackageContent(
+      profile.subscription_package,
+      session.package_access,
+    ),
+    is_level_locked: !session.applies_to_all && !levels.includes(session.level),
+  }));
 
   return (
     <AppShell profile={profile}>

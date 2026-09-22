@@ -3,10 +3,12 @@ import { CheckCircle2, Clock, Lock, PlayCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { LevelBadge } from "@/components/LevelBadge";
 import type { Lesson } from "@/lib/types";
+import { DIAMOND_UPGRADE_URL } from "@/lib/subscription-links";
 
 function LessonCardContent({ lesson }: { lesson: Lesson }) {
   const completed = Boolean(lesson.lesson_progress?.[0]?.completed);
   const locked = Boolean(lesson.is_locked);
+  const packageLocked = Boolean(lesson.is_package_locked);
 
   return (
     <Card
@@ -31,7 +33,19 @@ function LessonCardContent({ lesson }: { lesson: Lesson }) {
       </div>
       <h3 className="mt-5 text-xl font-black text-white">{lesson.title}</h3>
       <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-400">{lesson.description}</p>
-      {locked ? (
+      {packageLocked ? (
+        <div className="mt-4 rounded-xl border border-amber-400/20 bg-amber-400/10 p-3 text-xs font-bold leading-5 text-amber-200">
+          <p>هذه الميزة غير متاحة لباقتك الحالية. هذا المحتوى حصري للألماسي 💎</p>
+          <a
+            href={DIAMOND_UPGRADE_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-3 inline-flex rounded-lg bg-amber-300 px-3 py-2 text-xs font-black text-amber-950"
+          >
+            الترقية للألماسية
+          </a>
+        </div>
+      ) : locked ? (
         <p className="mt-4 rounded-xl border border-amber-400/20 bg-amber-400/10 p-3 text-xs font-bold leading-5 text-amber-200">
           يجب اجتياز اختبار الدرس السابق بنسبة 100% لفتح هذا الدرس.
         </p>
@@ -48,7 +62,7 @@ function LessonCardContent({ lesson }: { lesson: Lesson }) {
 }
 
 export function LessonCard({ lesson }: { lesson: Lesson }) {
-  if (lesson.is_locked) {
+  if (lesson.is_locked || lesson.is_package_locked) {
     return <LessonCardContent lesson={lesson} />;
   }
 

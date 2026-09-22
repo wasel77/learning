@@ -9,6 +9,7 @@ import {
 import { AppShell } from "@/components/AppShell";
 import { LessonContentTabs } from "@/components/LessonContentTabs";
 import { LevelBadge } from "@/components/LevelBadge";
+import { PackageLockedState } from "@/components/PackageLockedState";
 import { buttonClassName } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toggleLessonWatched } from "@/lib/actions";
@@ -16,6 +17,7 @@ import { getProfile } from "@/lib/data";
 import { isLessonUnlocked } from "@/lib/lesson-locks";
 import { getAllowedLevels } from "@/lib/learning-path";
 import { createClient } from "@/lib/supabase/server";
+import { canAccessPackageContent } from "@/lib/subscription-links";
 import type { LessonSummaryLink, LessonVocabularyItem } from "@/lib/types";
 
 function normalizeVocabulary(value: unknown): LessonVocabularyItem[] {
@@ -71,11 +73,19 @@ export default async function LessonDetailPage(
     .eq("is_active", true)
     .single();
 
-  if (
-    !lesson ||
-    !lesson.bunny_video_id ||
-    !getAllowedLevels(profile.level, profile.subscription_package).includes(lesson.level)
-  ) {
+  if (!lesson || !lesson.bunny_video_id) {
+    notFound();
+  }
+
+  if (!canAccessPackageContent(profile.subscription_package, lesson.package_access)) {
+    return (
+      <AppShell profile={profile}>
+        <PackageLockedState title={lesson.title} />
+      </AppShell>
+    );
+  }
+
+  if (!getAllowedLevels(profile.level, profile.subscription_package).includes(lesson.level)) {
     notFound();
   }
 

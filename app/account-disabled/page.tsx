@@ -2,8 +2,28 @@ import Link from "next/link";
 import { Mail, ShieldX } from "lucide-react";
 import { AccountDisabledActions } from "@/components/AccountDisabledActions";
 import { Card } from "@/components/ui/card";
+import { createClient } from "@/lib/supabase/server";
+import {
+  BRONZE_RENEWAL_URL,
+  DIAMOND_RENEWAL_URL,
+  DIAMOND_UPGRADE_URL,
+} from "@/lib/subscription-links";
+import type { SubscriptionPackage } from "@/lib/types";
 
-export default function AccountDisabledPage() {
+export default async function AccountDisabledPage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const { data: profile } = user
+    ? await supabase
+        .from("profiles")
+        .select("subscription_package")
+        .eq("id", user.id)
+        .maybeSingle<{ subscription_package: SubscriptionPackage | null }>()
+    : { data: null };
+  const subscriptionPackage = profile?.subscription_package;
+
   return (
     <main
       className="min-h-screen bg-[#020617] px-4 py-10 text-slate-50"
@@ -35,6 +55,39 @@ export default function AccountDisabledPage() {
               تواصل مع الإدارة
             </Link>
           </div>
+          {subscriptionPackage === "diamond" ? (
+            <a
+              href={DIAMOND_RENEWAL_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-4 inline-flex h-12 w-full items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-black text-white transition hover:bg-blue-500"
+            >
+              تجديد الاشتراك
+            </a>
+          ) : subscriptionPackage === "bronze" ? (
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <a
+                href={BRONZE_RENEWAL_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex h-12 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-black text-white transition hover:bg-blue-500"
+              >
+                تجديد البرونزية
+              </a>
+              <a
+                href={DIAMOND_UPGRADE_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex h-12 items-center justify-center rounded-xl border border-amber-400/40 bg-amber-400/10 px-5 text-sm font-black text-amber-200 transition hover:bg-amber-400/20"
+              >
+                الترقية للألماسية
+              </a>
+            </div>
+          ) : (
+            <p className="mt-4 rounded-xl border border-slate-700 bg-slate-900/70 p-3 text-sm leading-6 text-slate-300">
+              تواصلي مع الإدارة لمعرفة خيار إعادة التفعيل المناسب لحسابك.
+            </p>
+          )}
         </Card>
       </div>
     </main>

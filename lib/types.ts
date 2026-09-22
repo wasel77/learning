@@ -47,6 +47,7 @@ export type Lesson = {
   is_active: boolean;
   created_at: string;
   is_locked?: boolean;
+  is_package_locked?: boolean;
   lesson_progress?: {
     watched?: boolean;
     watched_at?: string | null;
@@ -102,6 +103,8 @@ export type LiveSession = {
   package_access: ContentPackageScope;
   is_active: boolean;
   created_at: string;
+  is_package_locked?: boolean;
+  is_level_locked?: boolean;
 };
 
 export type Notification = {

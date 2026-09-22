@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { CalendarClock, Radio, Video } from "lucide-react";
+import { CalendarClock, Lock, Radio, Video } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { buttonClassName } from "@/components/ui/button";
 import { CountdownTimer } from "@/components/CountdownTimer";
 import { LevelBadge } from "@/components/LevelBadge";
 import { formatArabicDate } from "@/lib/utils";
 import type { LiveSession } from "@/lib/types";
+import { DIAMOND_UPGRADE_URL } from "@/lib/subscription-links";
 
 export function LiveSessionCard({ session, now }: { session: LiveSession; now: number }) {
   const start = new Date(session.start_time).getTime();
@@ -13,6 +14,8 @@ export function LiveSessionCard({ session, now }: { session: LiveSession; now: n
   const liveNow = now >= start && now <= end;
   const within24 = start > now && start - now <= 86_400_000;
   const ended = now > end;
+  const packageLocked = Boolean(session.is_package_locked);
+  const locked = packageLocked || Boolean(session.is_level_locked);
 
   return (
     <Card className="overflow-hidden transition hover:border-sky-400/40 hover:shadow-[0_20px_70px_rgba(37,99,235,0.12)]">
@@ -57,7 +60,26 @@ export function LiveSessionCard({ session, now }: { session: LiveSession; now: n
         </div>
 
         <div className="flex flex-wrap gap-3 pt-2">
-          {session.live_url && !ended ? (
+          {locked ? (
+            <div className="w-full rounded-xl border border-amber-400/20 bg-amber-400/10 p-4 text-sm font-bold leading-6 text-amber-200">
+              <p className="flex items-center gap-2">
+                <Lock className="h-4 w-4" />
+                {packageLocked
+                  ? "هذه الميزة غير متاحة لباقتك الحالية"
+                  : "تفتح هذه الحصة عند الوصول إلى مستواها"}
+              </p>
+              {packageLocked ? (
+                <a
+                  href={DIAMOND_UPGRADE_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-3 inline-flex rounded-lg bg-amber-300 px-3 py-2 text-xs font-black text-amber-950"
+                >
+                  الترقية للألماسية
+                </a>
+              ) : null}
+            </div>
+          ) : session.live_url && !ended ? (
             <Link href={session.live_url} target="_blank" className={buttonClassName("default")}>
               <Video className="h-4 w-4" />
               انضمام

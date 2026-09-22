@@ -15,6 +15,7 @@ import { applyLessonLocks, isLessonCompleted } from "@/lib/lesson-locks";
 import { getAllowedLevels, getLearningPath } from "@/lib/learning-path";
 import { createClient } from "@/lib/supabase/server";
 import type { Level } from "@/lib/types";
+import { DIAMOND_UPGRADE_URL } from "@/lib/subscription-links";
 
 type RoadmapLesson = {
   id: string;
@@ -381,7 +382,19 @@ export default async function RoadmapPage() {
                           <p className="mt-2 text-slate-400">
                             {config.description}
                           </p>
-                          {diamondExclusive ? <p className="mt-3 max-w-xl rounded-xl border border-amber-400/25 bg-amber-400/10 p-3 text-sm font-bold leading-7 text-amber-100">دروس محترف حصرية للألماسي 💎 رقّي للألماسي لفتح المستوى.</p> : <p className="mt-3 text-sm font-bold text-slate-300">{levelCompleted} من {levelLessons.length} مكتمل</p>}
+                          {diamondExclusive ? (
+                            <div className="mt-3 max-w-xl rounded-xl border border-amber-400/25 bg-amber-400/10 p-3 text-sm font-bold leading-7 text-amber-100">
+                              <p>دروس محترف حصرية للألماسي 💎 رقّي للألماسي لفتح المستوى.</p>
+                              <a
+                                href={DIAMOND_UPGRADE_URL}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="mt-3 inline-flex rounded-lg bg-amber-300 px-3 py-2 text-xs font-black text-amber-950"
+                              >
+                                الترقية للألماسية
+                              </a>
+                            </div>
+                          ) : <p className="mt-3 text-sm font-bold text-slate-300">{levelCompleted} من {levelLessons.length} مكتمل</p>}
                         </div>
                       </div>
 

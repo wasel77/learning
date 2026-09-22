@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { applyLessonLocks } from "@/lib/lesson-locks";
 import { getAllowedLevels } from "@/lib/learning-path";
+import { canAccessPackageContent } from "@/lib/subscription-links";
 import type { Level, Profile } from "@/lib/types";
 
 export const getUser = cache(async () => {
@@ -129,9 +130,31 @@ export async function getLessonsForLevel(level: Level | null) {
   const { data } = await supabase
     .from("lessons")
     .select("*, lesson_progress(completed, completed_at)")
-    .in("level", getAllowedLevels(level ?? profile.level, profile.subscription_package))
     .eq("is_active", true)
     .order("level")
     .order("lesson_order");
-  return applyLessonLocks(data ?? []);
+  const lessons = data ?? [];
+  const allowedLevels = getAllowedLevels(
+    level ?? profile.level,
+    profile.subscription_package,
+  );
+  const accessibleLessons = lessons.filter(
+    (lesson) =>
+      allowedLevels.includes(lesson.level) &&
+      canAccessPackageContent(profile.subscription_package, lesson.package_access),
+  );
+  const progressionLocks = new Map(
+    applyLessonLocks(accessibleLessons).map((lesson) => [lesson.id, lesson.is_locked]),
+  );
+
+  return lessons.map((lesson) => ({
+    ...lesson,
+    is_package_locked: !canAccessPackageContent(
+      profile.subscription_package,
+      lesson.package_access,
+    ),
+    is_locked:
+      !allowedLevels.includes(lesson.level) ||
+      progressionLocks.get(lesson.id) !== false,
+  }));
 }

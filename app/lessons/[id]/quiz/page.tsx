@@ -4,11 +4,13 @@ import { AppShell } from "@/components/AppShell";
 import { EmptyState } from "@/components/EmptyState";
 import { LessonQuizClient } from "@/components/LessonQuizClient";
 import { LevelBadge } from "@/components/LevelBadge";
+import { PackageLockedState } from "@/components/PackageLockedState";
 import { buttonClassName } from "@/components/ui/button";
 import { getProfile } from "@/lib/data";
 import { isLessonUnlocked } from "@/lib/lesson-locks";
 import { getAllowedLevels } from "@/lib/learning-path";
 import { createClient } from "@/lib/supabase/server";
+import { canAccessPackageContent } from "@/lib/subscription-links";
 import type { LessonQuestion } from "@/lib/types";
 
 export default async function LessonQuizPage(props: PageProps<"/lessons/[id]/quiz">) {
@@ -22,8 +24,16 @@ export default async function LessonQuizPage(props: PageProps<"/lessons/[id]/qui
     .eq("is_active", true)
     .single();
 
+  if (!lesson) notFound();
+  if (!canAccessPackageContent(profile.subscription_package, lesson.package_access)) {
+    return (
+      <AppShell profile={profile}>
+        <PackageLockedState title={lesson.title} />
+      </AppShell>
+    );
+  }
   const allowedLevels = getAllowedLevels(profile.level, profile.subscription_package);
-  if (!lesson || !allowedLevels.includes(lesson.level)) notFound();
+  if (!allowedLevels.includes(lesson.level)) notFound();
 
   const { data: availableLessons } = await supabase
     .from("lessons")
