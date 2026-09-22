@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { applyLessonLocks } from "@/lib/lesson-locks";
 import { getAllowedLevels } from "@/lib/learning-path";
 import type { Level, Profile } from "@/lib/types";
@@ -43,6 +44,19 @@ export async function requireAdmin() {
   const profile = await getProfile();
   if (profile.role !== "admin") redirect("/dashboard");
   return profile;
+}
+
+export async function requireCoach() {
+  const profile = await getProfile();
+  const admin = createAdminClient();
+  const { data } = await admin
+    .from("private_class_coaches")
+    .select("id,user_id,display_name,bio,image_url,is_active,is_bookable")
+    .eq("user_id", profile.id)
+    .eq("is_active", true)
+    .maybeSingle();
+  if (!data) redirect("/private-classes");
+  return { profile, coach: data };
 }
 
 export async function getDashboardData() {

@@ -14,6 +14,7 @@ import {
   Medal,
   Menu,
   Settings,
+  Gem,
   User,
   Users,
   X,
@@ -35,6 +36,7 @@ const iconMap = {
   stories: Medal,
   profile: User,
   admin: Settings,
+  privateClasses: Gem,
   users: Users,
 } satisfies Record<NavIconKey, typeof LayoutDashboard>;
 

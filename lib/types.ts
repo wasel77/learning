@@ -115,6 +115,51 @@ export type Notification = {
   created_at: string;
 };
 
+export type PrivateClassCoach = {
+  id: string;
+  user_id: string;
+  display_name: string;
+  bio: string | null;
+  image_url: string | null;
+  is_active: boolean;
+  is_bookable: boolean;
+  average_rating?: number | null;
+  rating_count?: number;
+};
+
+export type PrivateClassBooking = {
+  id: string;
+  student_id: string;
+  coach_id: string;
+  starts_at: string;
+  ends_at: string;
+  telegram_username: string;
+  status: "scheduled" | "completed" | "no_show" | "cancelled";
+  zoom_url?: string | null;
+  zoom_updated_at: string | null;
+  attendance_recorded_at: string | null;
+  cancelled_at: string | null;
+  cancellation_reason: string | null;
+  reschedule_count: number;
+  created_at: string;
+  coach?: PrivateClassCoach;
+  student?: Pick<Profile, "id" | "full_name" | "email">;
+  has_review?: boolean;
+};
+
+export type PrivateClassReview = {
+  id: string;
+  booking_id: string;
+  coach_id: string;
+  student_id: string;
+  stars: number;
+  comment: string;
+  moderation_status: "pending" | "approved" | "rejected" | "hidden";
+  excluded_from_average: boolean;
+  exclusion_reason: string | null;
+  created_at: string;
+};
+
 export type SuccessStory = {
   id: string;
   student_name: string;

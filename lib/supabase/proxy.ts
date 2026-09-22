@@ -12,6 +12,8 @@ const protectedPrefixes = [
   "/success-stories",
   "/profile",
   "/admin",
+  "/private-classes",
+  "/coach/private-classes",
 ];
 
 export async function updateSession(request: NextRequest) {

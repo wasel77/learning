@@ -125,15 +125,18 @@ export default async function RoadmapPage() {
   const profile = await getProfile();
   const supabase = await createClient();
   const learningPath = getLearningPath(profile.subscription_package);
-  const pathLevelConfigs = learningPath.map(
+  const learningPathConfigs = learningPath.map(
     (level) => levelConfigs.find((config) => config.level === level)!,
   );
+  const pathLevelConfigs = profile.subscription_package === "bronze"
+    ? levelConfigs
+    : learningPathConfigs;
   const allowedLevels = getAllowedLevels(
     profile.level,
     profile.subscription_package,
   ) as Level[];
   const currentLevel = profile.level ?? "beginner";
-  const currentLevelIndex = pathLevelConfigs.findIndex(
+  const currentLevelIndex = learningPathConfigs.findIndex(
     (config) => config.level === currentLevel,
   );
 
@@ -360,8 +363,9 @@ export default async function RoadmapPage() {
               const levelCompleted = levelLessons.filter(isLessonCompleted).length;
               const levelProgress = percent(levelCompleted, levelLessons.length);
               const unlocked = allowedLevels.includes(config.level);
+              const diamondExclusive = profile.subscription_package === "bronze" && config.level === "professional";
               const isFuture =
-                pathLevelConfigs.findIndex((item) => item.level === config.level) >
+                learningPathConfigs.findIndex((item) => item.level === config.level) >
                 currentLevelIndex;
 
               return (
@@ -377,9 +381,7 @@ export default async function RoadmapPage() {
                           <p className="mt-2 text-slate-400">
                             {config.description}
                           </p>
-                          <p className="mt-3 text-sm font-bold text-slate-300">
-                            {levelCompleted} من {levelLessons.length} مكتمل
-                          </p>
+                          {diamondExclusive ? <p className="mt-3 max-w-xl rounded-xl border border-amber-400/25 bg-amber-400/10 p-3 text-sm font-bold leading-7 text-amber-100">دروس محترف حصرية للألماسي 💎 رقّي للألماسي لفتح المستوى.</p> : <p className="mt-3 text-sm font-bold text-slate-300">{levelCompleted} من {levelLessons.length} مكتمل</p>}
                         </div>
                       </div>
 
@@ -393,14 +395,14 @@ export default async function RoadmapPage() {
                           {levelLessons.length}
                         </p>
                         <p className="mt-1 text-sm text-slate-400">
-                          {unlocked ? "متاح" : isFuture ? "قادم" : "سابق"}
+                          {diamondExclusive ? "حصري للألماسي" : unlocked ? "متاح" : isFuture ? "قادم" : "سابق"}
                         </p>
                       </div>
                     </div>
                     <div className="mt-6">
                       <div className="mb-2 flex items-center justify-between text-sm text-slate-300">
                         <span>{levelProgress}% مكتمل</span>
-                        <span>{unlocked ? "متاح لك" : "يفتح بعد تقدمك"}</span>
+                        <span>{diamondExclusive ? "الترقية تفتح المستوى" : unlocked ? "متاح لك" : "يفتح بعد تقدمك"}</span>
                       </div>
                       <ProgressBar value={levelProgress} />
                     </div>

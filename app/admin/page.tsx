@@ -10,6 +10,7 @@ const items = [
   ["/admin/live-sessions", "الحصص المباشرة"],
   ["/admin/notifications", "الإشعارات"],
   ["/admin/success-stories", "قصص النجاح"],
+  ["/admin/private-classes", "Private Classes"],
 ];
 
 export default async function AdminPage() {

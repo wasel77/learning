@@ -9,7 +9,8 @@ export type NavIconKey =
   | "stories"
   | "profile"
   | "admin"
-  | "users";
+  | "users"
+  | "privateClasses";
 
 export type NavLink = {
   href: string;
@@ -23,6 +24,7 @@ export const appNavLinks: NavLink[] = [
   { href: "/challenge", label: "التحدي", icon: "challenge" },
   { href: "/ai-chat", label: "المعلم الذكي", icon: "assistant" },
   { href: "/live-sessions", label: "الحصص المباشرة", icon: "live" },
+  { href: "/private-classes", label: "الكلاسات الخاصة", icon: "privateClasses" },
   { href: "/notifications", label: "الإشعارات", icon: "notifications" },
   { href: "/success-stories", label: "قصص النجاح", icon: "stories" },
   { href: "/profile", label: "الملف الشخصي", icon: "profile" },

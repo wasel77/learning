@@ -13,6 +13,7 @@ import {
   Settings,
   User,
   Users,
+  Gem,
 } from "lucide-react";
 import { signOut } from "@/lib/actions";
 import { getNavLinks, type NavIconKey } from "@/lib/navigation";
@@ -30,6 +31,7 @@ const iconMap = {
   profile: User,
   admin: Settings,
   users: Users,
+  privateClasses: Gem,
 } satisfies Record<NavIconKey, typeof LayoutDashboard>;
 
 export function AppSidebar({ profile }: { profile: Profile }) {
