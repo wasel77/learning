@@ -16,14 +16,26 @@ export function sortLessonsByPath<T extends Pick<Lesson, "level" | "lesson_order
 }
 
 export function applyLessonLocks<T extends LockableLesson>(lessons: T[]) {
-  let foundCurrentLesson = false;
+  const sortedLessons = sortLessonsByPath(lessons);
+  const beginnerLessons = sortedLessons.filter((lesson) => lesson.level === "beginner");
+  const beginnerCompleted =
+    beginnerLessons.length > 0 && beginnerLessons.every(isLessonCompleted);
+  let foundCurrentCoreLesson = false;
+  let foundCurrentStrategyLesson = !beginnerCompleted;
 
-  return sortLessonsByPath(lessons).map((lesson) => {
+  return sortedLessons.map((lesson) => {
     const completed = isLessonCompleted(lesson);
-    const is_locked = foundCurrentLesson;
+    const isStrategy = lesson.level === "strategies";
+    const is_locked = isStrategy
+      ? foundCurrentStrategyLesson
+      : foundCurrentCoreLesson;
 
-    if (!completed && !foundCurrentLesson) {
-      foundCurrentLesson = true;
+    if (!completed) {
+      if (isStrategy && !foundCurrentStrategyLesson) {
+        foundCurrentStrategyLesson = true;
+      } else if (!isStrategy && !foundCurrentCoreLesson) {
+        foundCurrentCoreLesson = true;
+      }
     }
 
     return {

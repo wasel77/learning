@@ -25,7 +25,18 @@ export function getAllowedLevels(
   if (!currentLevel) return path.slice(0, 1);
 
   const currentIndex = path.indexOf(currentLevel);
-  if (currentIndex >= 0) return path.slice(0, currentIndex + 1);
+  if (currentIndex >= 0) {
+    const allowed = path.slice(0, currentIndex + 1);
+    const advancedIndex = path.indexOf("advanced");
+
+    // Completing beginner opens the first advanced and strategy lessons in
+    // parallel. Lesson-level locks still advance each branch independently.
+    if (currentIndex >= advancedIndex && !allowed.includes("strategies")) {
+      allowed.push("strategies");
+    }
+
+    return allowed;
+  }
 
   // A bronze account must never gain professional access, even if a stale or
   // manually edited profile contains that level.
