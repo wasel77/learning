@@ -38,6 +38,19 @@ revoke execute on function public.can_access_level(public.user_level)
 grant execute on function public.can_access_level(public.user_level)
   to authenticated;
 
+-- The expiry snapshot was introduced after earlier sync runs. Seed only missing
+-- rows from the latest expiry already recorded by those runs; never overwrite a
+-- newer subscription_cycles value and never change profile state or package.
+insert into private.subscription_cycles(user_id, expires_on, source_synced_at)
+select distinct on (change.profile_id)
+  change.profile_id,
+  change.expiry,
+  now()
+from wasel_sync.changes change
+where change.expiry is not null
+order by change.profile_id, change.run_id desc
+on conflict (user_id) do nothing;
+
 -- Queue the historical expired-cycle message with the same idempotency key as
 -- the recurring reminder. The outbox record is the durable backfill ledger.
 create or replace function private.enqueue_subscription_expired_backfill(
