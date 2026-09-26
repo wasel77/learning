@@ -10,10 +10,9 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { Card } from "@/components/ui/card";
-import { getProfile } from "@/lib/data";
+import { getActiveLessonCatalog, getProfile } from "@/lib/data";
 import { applyLessonLocks, isLessonCompleted } from "@/lib/lesson-locks";
 import { getAllowedLevels, getLearningPath } from "@/lib/learning-path";
-import { createClient } from "@/lib/supabase/server";
 import type { Level } from "@/lib/types";
 import { DIAMOND_UPGRADE_URL } from "@/lib/subscription-links";
 
@@ -124,7 +123,6 @@ function SummaryTile({
 
 export default async function RoadmapPage() {
   const profile = await getProfile();
-  const supabase = await createClient();
   const learningPath = getLearningPath(profile.subscription_package);
   const learningPathConfigs = learningPath.map(
     (level) => levelConfigs.find((config) => config.level === level)!,
@@ -141,14 +139,8 @@ export default async function RoadmapPage() {
     (config) => config.level === currentLevel,
   );
 
-  const { data } = await supabase
-    .from("lessons")
-    .select("id,level,title,lesson_order,lesson_progress(completed,completed_at)")
-    .eq("is_active", true)
-    .order("level")
-    .order("lesson_order");
-
-  const lessons = applyLessonLocks((data ?? []) as RoadmapLesson[]);
+  const catalog = await getActiveLessonCatalog();
+  const lessons = applyLessonLocks(catalog as RoadmapLesson[]);
 
   const completedLessons = lessons.filter(isLessonCompleted).length;
   const totalLessons = lessons.length;
