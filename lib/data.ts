@@ -5,7 +5,53 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { applyLessonLocks } from "@/lib/lesson-locks";
 import { getAllowedLevels } from "@/lib/learning-path";
 import { canAccessPackageContent } from "@/lib/subscription-links";
-import type { Level, Profile } from "@/lib/types";
+import type {
+  ContentPackageScope,
+  Lesson,
+  Level,
+  Profile,
+} from "@/lib/types";
+
+type LessonCatalogRow = {
+  id: string;
+  level: Level;
+  title: string;
+  description: string | null;
+  package_access: ContentPackageScope;
+  lesson_order: number;
+  duration_minutes: number | null;
+  completed: boolean;
+  completed_at: string | null;
+};
+
+export async function getActiveLessonCatalog() {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("list_active_lesson_catalog");
+
+  if (error) throw error;
+
+  return ((data ?? []) as LessonCatalogRow[]).map((lesson) => ({
+    id: lesson.id,
+    level: lesson.level,
+    title: lesson.title,
+    description: lesson.description,
+    package_access: lesson.package_access,
+    lesson_order: lesson.lesson_order,
+    duration_minutes: lesson.duration_minutes,
+    is_active: true,
+    summary: null,
+    summary_links: null,
+    vocabulary: null,
+    bunny_video_id: null,
+    created_at: "",
+    lesson_progress: [
+      {
+        completed: lesson.completed,
+        completed_at: lesson.completed_at,
+      },
+    ],
+  })) satisfies Lesson[];
+}
 
 export const getUser = cache(async () => {
   const supabase = await createClient();
@@ -126,14 +172,7 @@ export async function getDashboardData() {
 
 export async function getLessonsForLevel(level: Level | null) {
   const profile = await getProfile();
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from("lessons")
-    .select("*, lesson_progress(completed, completed_at)")
-    .eq("is_active", true)
-    .order("level")
-    .order("lesson_order");
-  const lessons = data ?? [];
+  const lessons = await getActiveLessonCatalog();
   const allowedLevels = getAllowedLevels(
     level ?? profile.level,
     profile.subscription_package,
