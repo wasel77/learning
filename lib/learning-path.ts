@@ -1,4 +1,4 @@
-import type { Level, SubscriptionPackage } from "@/lib/types";
+import type { Level, SubscriptionPackage } from "./types";
 
 export const levels: Level[] = [
   "beginner",

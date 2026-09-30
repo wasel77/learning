@@ -11,17 +11,20 @@ import {
 import { AppShell } from "@/components/AppShell";
 import { Card } from "@/components/ui/card";
 import { getActiveLessonCatalog, getProfile } from "@/lib/data";
-import { applyLessonLocks, isLessonCompleted } from "@/lib/lesson-locks";
+import { isLessonCompleted } from "@/lib/lesson-locks";
+import { applyLessonAccess } from "@/lib/lesson-access";
 import { getAllowedLevels, getLearningPath } from "@/lib/learning-path";
-import type { Level } from "@/lib/types";
+import type { ContentPackageScope, Level } from "@/lib/types";
 import { DIAMOND_UPGRADE_URL } from "@/lib/subscription-links";
 
 type RoadmapLesson = {
   id: string;
   level: Level;
   title: string;
+  package_access: ContentPackageScope;
   lesson_order: number;
   is_locked?: boolean;
+  is_package_locked?: boolean;
   lesson_progress?: { completed: boolean; completed_at: string | null }[];
 };
 
@@ -140,7 +143,7 @@ export default async function RoadmapPage() {
   );
 
   const catalog = await getActiveLessonCatalog();
-  const lessons = applyLessonLocks(catalog as RoadmapLesson[]);
+  const lessons = applyLessonAccess(profile, catalog as RoadmapLesson[]);
 
   const completedLessons = lessons.filter(isLessonCompleted).length;
   const totalLessons = lessons.length;
@@ -285,23 +288,11 @@ export default async function RoadmapPage() {
                         !completed &&
                         currentLessons.find((item) => !isLessonCompleted(item))?.id ===
                           lesson.id;
-                      const locked = Boolean(lesson.is_locked);
+                      const packageLocked = Boolean(lesson.is_package_locked);
+                      const locked = Boolean(lesson.is_locked || packageLocked);
 
-                      return (
-                        <Link
-                          key={lesson.id}
-                          href={locked ? "/roadmap" : `/lessons/${lesson.id}`}
-                          className={[
-                            "flex items-center justify-between gap-4 rounded-2xl border p-4 transition hover:-translate-y-0.5",
-                            completed
-                              ? "border-emerald-500/35 bg-emerald-500/10"
-                              : locked
-                                ? "border-slate-700 bg-slate-900/50 opacity-70"
-                              : firstUnfinished
-                                ? "border-amber-500/60 bg-amber-500/10 shadow-lg shadow-amber-950/20"
-                                : "border-slate-700 bg-slate-800/70",
-                          ].join(" ")}
-                        >
+                      const lessonCard = (
+                        <>
                           <div className="flex items-center gap-4">
                             <span
                               className={[
@@ -316,8 +307,22 @@ export default async function RoadmapPage() {
                                 {lesson.title}
                               </h4>
                               <p className="mt-1 text-sm text-slate-400">
-                                {locked ? "اجتز اختبار الدرس السابق 100% لفتحه" : "اضغط لفتح الدرس"}
+                                {packageLocked
+                                  ? "حصري للألماسي"
+                                  : locked
+                                    ? "اجتز اختبار الدرس السابق 100% لفتحه"
+                                    : "اضغط لفتح الدرس"}
                               </p>
+                              {packageLocked ? (
+                                <a
+                                  href={DIAMOND_UPGRADE_URL}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="mt-3 inline-flex rounded-lg bg-amber-300 px-3 py-2 text-xs font-black text-amber-950"
+                                >
+                                  الترقية للألماسية
+                                </a>
+                              ) : null}
                             </div>
                           </div>
                           {completed ? (
@@ -329,6 +334,27 @@ export default async function RoadmapPage() {
                           ) : (
                             <Lock className="h-5 w-5 text-slate-400" />
                           )}
+                        </>
+                      );
+
+                      const lessonClassName = [
+                        "flex items-center justify-between gap-4 rounded-2xl border p-4 transition",
+                        completed
+                          ? "border-emerald-500/35 bg-emerald-500/10"
+                          : locked
+                            ? "border-slate-700 bg-slate-900/50 opacity-70"
+                            : firstUnfinished
+                              ? "border-amber-500/60 bg-amber-500/10 shadow-lg shadow-amber-950/20 hover:-translate-y-0.5"
+                              : "border-slate-700 bg-slate-800/70 hover:-translate-y-0.5",
+                      ].join(" ");
+
+                      return locked ? (
+                        <div key={lesson.id} className={lessonClassName}>
+                          {lessonCard}
+                        </div>
+                      ) : (
+                        <Link key={lesson.id} href={`/lessons/${lesson.id}`} className={lessonClassName}>
+                          {lessonCard}
                         </Link>
                       );
                     })}

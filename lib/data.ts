@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { applyLessonLocks } from "@/lib/lesson-locks";
 import { getAllowedLevels } from "@/lib/learning-path";
-import { canAccessPackageContent } from "@/lib/subscription-links";
+import { applyLessonAccess } from "@/lib/lesson-access";
 import type {
   ContentPackageScope,
   Lesson,
@@ -173,27 +173,8 @@ export async function getDashboardData() {
 export async function getLessonsForLevel(level: Level | null) {
   const profile = await getProfile();
   const lessons = await getActiveLessonCatalog();
-  const allowedLevels = getAllowedLevels(
-    level ?? profile.level,
-    profile.subscription_package,
+  return applyLessonAccess(
+    { ...profile, level: level ?? profile.level },
+    lessons,
   );
-  const accessibleLessons = lessons.filter(
-    (lesson) =>
-      allowedLevels.includes(lesson.level) &&
-      canAccessPackageContent(profile.subscription_package, lesson.package_access),
-  );
-  const progressionLocks = new Map(
-    applyLessonLocks(accessibleLessons).map((lesson) => [lesson.id, lesson.is_locked]),
-  );
-
-  return lessons.map((lesson) => ({
-    ...lesson,
-    is_package_locked: !canAccessPackageContent(
-      profile.subscription_package,
-      lesson.package_access,
-    ),
-    is_locked:
-      !allowedLevels.includes(lesson.level) ||
-      progressionLocks.get(lesson.id) !== false,
-  }));
 }

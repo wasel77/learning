@@ -10,14 +10,13 @@ import { AppShell } from "@/components/AppShell";
 import { LessonContentTabs } from "@/components/LessonContentTabs";
 import { LevelBadge } from "@/components/LevelBadge";
 import { PackageLockedState } from "@/components/PackageLockedState";
+import { ProgressionLockedState } from "@/components/ProgressionLockedState";
 import { buttonClassName } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toggleLessonWatched } from "@/lib/actions";
-import { getProfile } from "@/lib/data";
-import { isLessonUnlocked } from "@/lib/lesson-locks";
-import { getAllowedLevels } from "@/lib/learning-path";
+import { getActiveLessonCatalog, getProfile } from "@/lib/data";
+import { getLessonAccessState } from "@/lib/lesson-access";
 import { createClient } from "@/lib/supabase/server";
-import { canAccessPackageContent } from "@/lib/subscription-links";
 import type { LessonSummaryLink, LessonVocabularyItem } from "@/lib/types";
 
 function normalizeVocabulary(value: unknown): LessonVocabularyItem[] {
@@ -66,6 +65,26 @@ export default async function LessonDetailPage(
   const searchParams = await props.searchParams;
   const profile = await getProfile();
   const supabase = await createClient();
+  const catalog = await getActiveLessonCatalog();
+  const catalogLesson = catalog.find((lesson) => lesson.id === id);
+  const access = getLessonAccessState(profile, catalog, id);
+
+  if (!catalogLesson || access === "missing") notFound();
+  if (access === "package_locked") {
+    return (
+      <AppShell profile={profile}>
+        <PackageLockedState title={catalogLesson.title} />
+      </AppShell>
+    );
+  }
+  if (access === "progression_locked") {
+    return (
+      <AppShell profile={profile}>
+        <ProgressionLockedState title={catalogLesson.title} />
+      </AppShell>
+    );
+  }
+
   const { data: lesson } = await supabase
     .from("lessons")
     .select("*, lesson_progress(watched, watched_at, completed, completed_at, quiz_score, quiz_total, quiz_percentage, quiz_passed)")
@@ -73,33 +92,7 @@ export default async function LessonDetailPage(
     .eq("is_active", true)
     .single();
 
-  if (!lesson || !lesson.bunny_video_id) {
-    notFound();
-  }
-
-  if (!canAccessPackageContent(profile.subscription_package, lesson.package_access)) {
-    return (
-      <AppShell profile={profile}>
-        <PackageLockedState title={lesson.title} />
-      </AppShell>
-    );
-  }
-
-  if (!getAllowedLevels(profile.level, profile.subscription_package).includes(lesson.level)) {
-    notFound();
-  }
-
-  const { data: availableLessons } = await supabase
-    .from("lessons")
-    .select("id,level,lesson_order,lesson_progress(completed,completed_at)")
-    .in("level", getAllowedLevels(profile.level, profile.subscription_package))
-    .eq("is_active", true)
-    .order("level")
-    .order("lesson_order");
-
-  if (!isLessonUnlocked(lesson.id, availableLessons ?? [])) {
-    notFound();
-  }
+  if (!lesson || !lesson.bunny_video_id) notFound();
 
   const completed = Boolean(lesson.lesson_progress?.[0]?.completed);
   const watched = Boolean(lesson.lesson_progress?.[0]?.watched);

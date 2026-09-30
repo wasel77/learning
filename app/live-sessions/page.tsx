@@ -5,6 +5,7 @@ import { LiveSessionCard } from "@/components/LiveSessionCard";
 import { Card } from "@/components/ui/card";
 import { getProfile } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import type { LiveSession } from "@/lib/types";
 import {
   formatArabicDate,
@@ -150,17 +151,30 @@ function LiveSessionsCalendar({
 export default async function LiveSessionsPage() {
   const profile = await getProfile();
   const supabase = await createClient();
+  const admin = createAdminClient();
   const now = new Date();
   const levels = getAllowedLevels(profile.level, profile.subscription_package);
-  const { data } = await supabase
-    .from("live_sessions")
-    .select("*")
-    .eq("is_active", true)
-    .gte("end_time", now.toISOString())
-    .order("start_time");
-
-  const sessions = ((data ?? []) as LiveSession[]).map((session) => ({
+  const [{ data: catalog }, { data: accessibleRows }] = await Promise.all([
+    admin
+      .from("live_sessions")
+      .select("id,title,description,level,applies_to_all,instructor_name,start_time,end_time,package_access,is_active,created_at")
+      .eq("is_active", true)
+      .gte("end_time", now.toISOString())
+      .order("start_time"),
+    supabase
+      .from("live_sessions")
+      .select("*")
+      .eq("is_active", true)
+      .gte("end_time", now.toISOString())
+      .order("start_time"),
+  ]);
+  const accessibleById = new Map(
+    ((accessibleRows ?? []) as LiveSession[]).map((session) => [session.id, session]),
+  );
+  const sessions = ((catalog ?? []) as Omit<LiveSession, "live_url" | "replay_url">[]).map((session) => ({
     ...session,
+    live_url: accessibleById.get(session.id)?.live_url ?? null,
+    replay_url: accessibleById.get(session.id)?.replay_url ?? null,
     is_package_locked: !canAccessPackageContent(
       profile.subscription_package,
       session.package_access,

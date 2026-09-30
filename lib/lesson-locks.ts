@@ -1,5 +1,5 @@
-import type { Lesson } from "@/lib/types";
-import { getLevelOrder } from "@/lib/learning-path";
+import type { Lesson } from "./types";
+import { getLevelOrder } from "./learning-path";
 
 type LockableLesson = Pick<Lesson, "id" | "level" | "lesson_order" | "lesson_progress">;
 

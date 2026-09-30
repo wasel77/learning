@@ -6,9 +6,9 @@ import { redirect } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { calculateLevel, formatArabicDate, parseSaudiDateTimeToUtcIso } from "@/lib/utils";
-import { getProfile, requireAdmin, requireUser } from "@/lib/data";
+import { getActiveLessonCatalog, getProfile, requireAdmin, requireUser } from "@/lib/data";
+import { getLessonAccessState } from "@/lib/lesson-access";
 import { getAllowedLevels, getLearningPath, getNextLevel } from "@/lib/learning-path";
-import { canAccessPackageContent } from "@/lib/subscription-links";
 import type {
   ContentPackageScope,
   LessonQuestion,
@@ -283,25 +283,15 @@ export async function savePlacementAttempt(answers: Record<string, string>) {
 export async function toggleLessonWatched(lessonId: string, watched: boolean) {
   const user = await requireUser();
   const supabase = await createClient();
-  const [{ data: profile }, { data: lesson }] = await Promise.all([
+  const [{ data: profile }, catalog] = await Promise.all([
     supabase
       .from("profiles")
       .select("level,subscription_package")
       .eq("id", user.id)
       .single<{ level: Level | null; subscription_package: SubscriptionPackage }>(),
-    supabase
-      .from("lessons")
-      .select("level,package_access")
-      .eq("id", lessonId)
-      .eq("is_active", true)
-      .maybeSingle<{ level: Level; package_access: ContentPackageScope }>(),
+    getActiveLessonCatalog(),
   ]);
-  if (
-    !profile ||
-    !lesson ||
-    !getAllowedLevels(profile.level, profile.subscription_package).includes(lesson.level) ||
-    !canAccessPackageContent(profile.subscription_package, lesson.package_access)
-  ) {
+  if (!profile || getLessonAccessState(profile, catalog, lessonId) !== "allowed") {
     throw new Error("هذا الدرس غير متاح لباقتك الحالية");
   }
   await supabase.from("lesson_progress").upsert(
@@ -322,42 +312,33 @@ export async function submitLessonQuiz(lessonId: string, answers: Record<string,
   const user = await requireUser();
   const supabase = await createClient();
 
-  const [profileResult, lessonResult, questionsResult] = await Promise.all([
+  const [profileResult, catalog] = await Promise.all([
     supabase
       .from("profiles")
       .select("level,subscription_package")
       .eq("id", user.id)
       .single<{ level: Level | null; subscription_package: SubscriptionPackage }>(),
-    supabase
-      .from("lessons")
-      .select("id,level,package_access")
-      .eq("id", lessonId)
-      .single<{ id: string; level: Level; package_access: ContentPackageScope }>(),
-    supabase
+    getActiveLessonCatalog(),
+  ]);
+
+  if (
+    !profileResult.data ||
+    getLessonAccessState(profileResult.data, catalog, lessonId) !== "allowed"
+  ) {
+    return { error: "هذا الدرس غير متاح لباقتك الحالية" };
+  }
+
+  const lessonResult = catalog.find((lesson) => lesson.id === lessonId);
+  const questionsResult = await supabase
       .from("lesson_questions")
       .select("*, options:lesson_question_options(*)")
       .eq("lesson_id", lessonId)
       .eq("is_active", true)
-      .order("question_order"),
-  ]);
+      .order("question_order");
 
   const activeQuestions = (questionsResult.data ?? []) as LessonQuestion[];
-  if (questionsResult.error || lessonResult.error || !lessonResult.data || !activeQuestions.length) {
+  if (questionsResult.error || !lessonResult || !activeQuestions.length) {
     return { error: "لا توجد أسئلة متاحة لهذا الدرس حالياً" };
-  }
-
-  if (
-    !profileResult.data ||
-    !getAllowedLevels(
-      profileResult.data.level,
-      profileResult.data.subscription_package,
-    ).includes(lessonResult.data.level) ||
-    !canAccessPackageContent(
-      profileResult.data.subscription_package,
-      lessonResult.data.package_access,
-    )
-  ) {
-    return { error: "هذا الدرس غير متاح لباقتك الحالية" };
   }
 
   const total = activeQuestions.length;
@@ -398,7 +379,7 @@ export async function submitLessonQuiz(lessonId: string, answers: Record<string,
 
   let promotedLevel: Level | null = null;
   const currentLevel = profileResult.data?.level;
-  const lessonLevel = lessonResult.data.level;
+  const lessonLevel = lessonResult.level;
   const subscriptionPackage = profileResult.data?.subscription_package;
   const nextLevel = currentLevel && subscriptionPackage
     ? getNextLevel(currentLevel, subscriptionPackage)

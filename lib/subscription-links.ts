@@ -1,4 +1,4 @@
-import type { ContentPackageScope, SubscriptionPackage } from "@/lib/types";
+import type { ContentPackageScope, SubscriptionPackage } from "./types";
 
 export const DIAMOND_UPGRADE_URL =
   "https://thewtofficial.com/الترقيه-للالماسيه/p927835383";

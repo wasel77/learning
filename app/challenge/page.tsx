@@ -1,9 +1,9 @@
 import { AppShell } from "@/components/AppShell";
 import { VocabularyChallengeClient } from "@/components/VocabularyChallengeClient";
-import { getProfile } from "@/lib/data";
+import { getActiveLessonCatalog, getProfile } from "@/lib/data";
+import { getLessonAccessState } from "@/lib/lesson-access";
 import { createClient } from "@/lib/supabase/server";
 import type { LessonVocabularyItem } from "@/lib/types";
-import { getAllowedLevels } from "@/lib/learning-path";
 
 function normalizeVocabulary(value: unknown): LessonVocabularyItem[] {
   if (!Array.isArray(value)) return [];
@@ -21,12 +21,15 @@ function normalizeVocabulary(value: unknown): LessonVocabularyItem[] {
 export default async function ChallengePage() {
   const profile = await getProfile();
   const supabase = await createClient();
-  const levels = getAllowedLevels(profile.level, profile.subscription_package);
+  const catalog = await getActiveLessonCatalog();
+  const accessibleLessonIds = catalog
+    .filter((lesson) => getLessonAccessState(profile, catalog, lesson.id) === "allowed")
+    .map((lesson) => lesson.id);
   const { data } = await supabase
     .from("lessons")
     .select("title,vocabulary")
     .eq("is_active", true)
-    .in("level", levels)
+    .in("id", accessibleLessonIds.length ? accessibleLessonIds : ["00000000-0000-0000-0000-000000000000"])
     .order("level")
     .order("lesson_order");
 
