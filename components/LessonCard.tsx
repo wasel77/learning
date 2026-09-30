@@ -19,7 +19,12 @@ function LessonCardContent({ lesson }: { lesson: Lesson }) {
     >
       <div className="flex items-start justify-between gap-4">
         <LevelBadge level={lesson.level} />
-        {completed ? (
+        {packageLocked ? (
+          <span className="inline-flex items-center gap-1 rounded-full bg-slate-800 px-3 py-1 text-xs text-slate-300">
+            <Lock className="h-3 w-3" />
+            مقفول
+          </span>
+        ) : completed ? (
           <span className="inline-flex items-center gap-1 rounded-full bg-emerald-400/10 px-3 py-1 text-xs text-emerald-200">
             <CheckCircle2 className="h-3 w-3" />
             مكتمل

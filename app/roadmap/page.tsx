@@ -148,9 +148,7 @@ export default async function RoadmapPage() {
   const completedLessons = lessons.filter(isLessonCompleted).length;
   const totalLessons = lessons.length;
   const overallProgress = percent(completedLessons, totalLessons);
-  const availableLessons = lessons.filter((lesson) =>
-    allowedLevels.includes(lesson.level),
-  );
+  const availableLessons = lessons.filter((lesson) => !lesson.is_locked);
   const availableCompleted = availableLessons.filter(isLessonCompleted).length;
   const lockedLessons = lessons.length - availableLessons.length;
   const currentLessons = lessons.filter((lesson) => lesson.level === currentLevel);
@@ -297,7 +295,7 @@ export default async function RoadmapPage() {
                             <span
                               className={[
                                 "grid h-12 w-12 place-items-center rounded-full text-lg font-black text-white",
-                                completed ? "bg-emerald-500" : locked ? "bg-slate-700" : "bg-teal-500",
+                            completed && !packageLocked ? "bg-emerald-500" : locked ? "bg-slate-700" : "bg-teal-500",
                               ].join(" ")}
                             >
                               {index * 7 + lessonIndex + 1}
@@ -325,7 +323,7 @@ export default async function RoadmapPage() {
                               ) : null}
                             </div>
                           </div>
-                          {completed ? (
+                          {completed && !packageLocked ? (
                             <CheckCircle2 className="h-6 w-6 text-emerald-300" />
                           ) : locked ? (
                             <Lock className="h-5 w-5 text-slate-400" />
@@ -339,7 +337,7 @@ export default async function RoadmapPage() {
 
                       const lessonClassName = [
                         "flex items-center justify-between gap-4 rounded-2xl border p-4 transition",
-                        completed
+                        completed && !packageLocked
                           ? "border-emerald-500/35 bg-emerald-500/10"
                           : locked
                             ? "border-slate-700 bg-slate-900/50 opacity-70"
