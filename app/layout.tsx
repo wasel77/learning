@@ -57,7 +57,7 @@ export default function RootLayout({
       className={`${cairo.className} h-full antialiased`}
     >
       <head>
-        <meta name="domain-verification" content="f82fe612c38b5ff6b2a07abae9e9a502b71508856bcbd016467822e44581f32d" />
+        <meta name="domain-verification" content="f82fe612c38b5ff6b2a07abae9e9a502b71508856bcb0d16467822e44581f32d" />
         <script dangerouslySetInnerHTML={{ __html: themeInitializationScript }} />
       </head>
       <body className="min-h-full bg-[#020617] text-slate-50">
