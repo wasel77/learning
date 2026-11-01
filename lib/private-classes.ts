@@ -101,7 +101,7 @@ export function googleCalendarUrl(
     text: `جلسة خاصة مع ${coachName}`,
     dates: `${format(booking.starts_at)}/${format(booking.ends_at)}`,
     details:
-      "جلسة خاصة من أكاديمية وصل. رابط Zoom يظهر في الموقع قبل الموعد بـ15 دقيقة.",
+      "جلسة خاصة من أكاديمية مسك. رابط Zoom يظهر في الموقع قبل الموعد بـ15 دقيقة.",
     ctz: "Asia/Riyadh",
   });
   return `https://calendar.google.com/calendar/render?${params}`;

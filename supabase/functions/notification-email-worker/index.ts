@@ -3,13 +3,13 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
 const baseUrl = Deno.env.get("SUPABASE_URL")!;
 const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const resendKey = Deno.env.get("RESEND_API_KEY");
-const siteUrl = "https://waselacademy.com";
-const from = "أكاديمية وصل للتطور المالي <notifications@waselacademy.com>";
+const siteUrl = "https://miskacademy.online";
+const from = "أكاديمية مسك للتطور المالي <notifications@miskacademy.online>";
 const replyTo = "thewtofficial@gmail.com";
 
-const bronzeRenewal = "https://thewtofficial.com/تجديد-البرونزيه/p1776842469";
-const diamondRenewal = "https://thewtofficial.com/تجديد-الماسيه/p752548395";
-const diamondUpgrade = "https://thewtofficial.com/الترقيه-للالماسيه/p927835383";
+const bronzeRenewal = "https://miskpay.site/تجديد-الستارت/p1776842469";
+const diamondRenewal = "https://miskpay.site/تجديد-الرويال/p752548395";
+const diamondUpgrade = "https://miskpay.site/الترقيه/c3822025";
 
 type EmailRow = {
   id: string; email: string; full_name: string | null; subscription_package: string;
@@ -32,15 +32,15 @@ function ctas(row: EmailRow) {
   }
   if (row.subscription_package === "diamond") return [{ label: "تجديد الاشتراك", url: diamondRenewal }];
   if (row.subscription_package === "bronze") return [
-    { label: "تجديد البرونزية", url: bronzeRenewal },
-    { label: "الترقية للألماسية", url: diamondUpgrade, accent: true },
+    { label: "تجديد ستارت", url: bronzeRenewal },
+    { label: "الترقية إلى رويال", url: diamondUpgrade, accent: true },
   ];
   return [];
 }
 
 function packageNote(row: EmailRow) {
   return row.template_key.startsWith("subscription_") && row.subscription_package === "bronze"
-    ? "الترقية للألماسية تفتح لك المزايا الإضافية الموجودة في الأكاديمية، ومنها الكلاسات الخاصة ومستوى محترف والاستراتيجيات الخاصة بالألماسي."
+    ? "الترقية إلى رويال تفتح لك المزايا الإضافية الموجودة في الأكاديمية، ومنها الكلاسات الخاصة ومستوى محترف والاستراتيجيات الخاصة برويال."
     : "";
 }
 
@@ -56,14 +56,14 @@ function render(row: EmailRow) {
   const html = `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>${escapeHtml(row.subject)}</title></head>
   <body style="margin:0;background-color:#f1f5f9;font-family:Arial,Helvetica,sans-serif;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="#f1f5f9" style="background-color:#f1f5f9;"><tr><td align="center" style="padding-top:24px;padding-right:12px;padding-bottom:24px;padding-left:12px;">
   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px;background-color:#ffffff;border-radius:16px;"><tr><td bgcolor="#172554" style="background-color:#172554;border-radius:16px 16px 0 0;padding-top:24px;padding-right:24px;padding-bottom:24px;padding-left:24px;text-align:right;">
-  <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:20px;line-height:30px;font-weight:700;color:#ffffff;">أكاديمية وصل للتطور المالي</p></td></tr><tr><td style="padding-top:28px;padding-right:24px;padding-bottom:28px;padding-left:24px;text-align:right;">
+  <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:20px;line-height:30px;font-weight:700;color:#ffffff;">أكاديمية مسك للتطور المالي</p></td></tr><tr><td style="padding-top:28px;padding-right:24px;padding-bottom:28px;padding-left:24px;text-align:right;">
   <p style="margin-top:0;margin-right:0;margin-bottom:14px;margin-left:0;font-family:Arial,Helvetica,sans-serif;font-size:17px;line-height:28px;font-weight:700;color:#172554;">${greeting}</p>
   <h1 style="margin-top:0;margin-right:0;margin-bottom:14px;margin-left:0;font-family:Arial,Helvetica,sans-serif;font-size:24px;line-height:36px;font-weight:700;color:#0f172a;">${escapeHtml(row.subject.split("|")[0].trim())}</h1>
   <p style="margin-top:0;margin-right:0;margin-bottom:20px;margin-left:0;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:28px;color:#334155;">${body}</p>
   ${note ? `<p style="margin-top:0;margin-right:0;margin-bottom:20px;margin-left:0;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:25px;color:#475569;background-color:#fff7ed;border-right:4px solid #d6a84b;padding-top:12px;padding-right:14px;padding-bottom:12px;padding-left:14px;">${note}</p>` : ""}
-  ${buttons}<p style="margin-top:24px;margin-right:0;margin-bottom:0;margin-left:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:21px;color:#64748b;">هذه رسالة تلقائية من أكاديمية وصل للتطور المالي. للرد أو الاستفسار استخدمي Reply على هذه الرسالة.</p>
+  ${buttons}<p style="margin-top:24px;margin-right:0;margin-bottom:0;margin-left:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:21px;color:#64748b;">هذه رسالة تلقائية من أكاديمية مسك للتطور المالي. للرد أو الاستفسار استخدمي Reply على هذه الرسالة.</p>
   </td></tr></table></td></tr></table></body></html>`;
-  const text = `${greeting}\n\n${row.subject.split("|")[0].trim()}\n\n${String(row.payload.body ?? "")}${packageNote(row) ? `\n\n${packageNote(row)}` : ""}\n\n${ctas(row).map((c) => `${c.label}: ${c.url}`).join("\n")}\n\nأكاديمية وصل للتطور المالي`;
+  const text = `${greeting}\n\n${row.subject.split("|")[0].trim()}\n\n${String(row.payload.body ?? "")}${packageNote(row) ? `\n\n${packageNote(row)}` : ""}\n\n${ctas(row).map((c) => `${c.label}: ${c.url}`).join("\n")}\n\nأكاديمية مسك للتطور المالي`;
   return { html, text };
 }
 
