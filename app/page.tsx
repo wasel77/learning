@@ -146,7 +146,7 @@ export default async function Home() {
                 {[36, 54, 44, 70, 62, 88, 74, 94].map((height, index) => (
                   <div
                     key={index}
-                    className="flex flex-1 flex-col items-center gap-2"
+                    className="flex h-full flex-1 flex-col items-center justify-end gap-2"
                   >
                     <div
                       className="w-full rounded-t-xl bg-gradient-to-t from-blue-700 to-sky-300"

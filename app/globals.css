@@ -242,6 +242,48 @@ body {
   --tw-ring-color: var(--theme-surface);
 }
 
+html[data-theme="light"] .text-emerald-100,
+html[data-theme="light"] .text-emerald-200,
+html[data-theme="light"] .text-emerald-300 {
+  color: #28664f;
+}
+
+html[data-theme="light"] [class~="bg-emerald-400/10"],
+html[data-theme="light"] [class~="bg-emerald-500/10"] {
+  background-color: #e1efe8;
+}
+
+html[data-theme="light"] [class~="border-emerald-400/20"] {
+  border-color: #b7d8c8;
+}
+
+html[data-theme="light"] .text-amber-200,
+html[data-theme="light"] .text-amber-300,
+html[data-theme="light"] .text-orange-300,
+html[data-theme="light"] .text-yellow-300 {
+  color: #825914;
+}
+
+html[data-theme="light"] [class~="bg-amber-400/10"] {
+  background-color: #f5ecda;
+}
+
+html[data-theme="light"] [class~="border-amber-400/20"],
+html[data-theme="light"] [class~="border-amber-400/40"] {
+  border-color: #dbc28f;
+}
+
+html[data-theme="light"] .text-red-100,
+html[data-theme="light"] .text-red-200,
+html[data-theme="light"] .text-red-300,
+html[data-theme="light"] .text-rose-400 {
+  color: #963c3c;
+}
+
+html[data-theme="light"] [class~="bg-red-500/15"] {
+  background-color: #f7e5e5;
+}
+
 .theme-switcher {
   position: fixed;
   z-index: 70;
