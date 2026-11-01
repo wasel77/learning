@@ -1,15 +1,22 @@
 import type { Metadata } from "next";
-import { Cairo } from "next/font/google";
+import localFont from "next/font/local";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import "./globals.css";
 
-const cairo = Cairo({
-  subsets: ["arabic", "latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
+const thmanyahText = localFont({
+  src: [
+    { path: "./fonts/thmanyahseriftext-Light.otf", weight: "300", style: "normal" },
+    { path: "./fonts/thmanyahseriftext-Regular.otf", weight: "400", style: "normal" },
+    { path: "./fonts/thmanyahseriftext-Medium.otf", weight: "500", style: "normal" },
+    { path: "./fonts/thmanyahseriftext-Bold.otf", weight: "700", style: "normal" },
+    { path: "./fonts/thmanyahseriftext-Black.otf", weight: "900", style: "normal" },
+  ],
+  display: "swap",
+  variable: "--font-thmanyah-text",
 });
 
 export const metadata: Metadata = {
-  title: "وصل للتطور المالي",
+  title: "مسك للتطور المالي",
   description: "وجهتك الاولى للاستثمار",
   icons: {
     icon: [
@@ -54,13 +61,13 @@ export default function RootLayout({
       lang="ar"
       dir="rtl"
       suppressHydrationWarning
-      className={`${cairo.className} h-full antialiased`}
+      className={`${thmanyahText.className} ${thmanyahText.variable} h-full antialiased`}
     >
       <head>
         <meta name="domain-verification" content="db4ee6897065bd68be35891f960fd7665140aa73ecd45d6d3bc4fd41660a09a6" />
         <script dangerouslySetInnerHTML={{ __html: themeInitializationScript }} />
       </head>
-      <body className="min-h-full bg-[#020617] text-slate-50">
+      <body className="min-h-full bg-background text-foreground">
         {children}
         <ThemeSwitcher />
       </body>

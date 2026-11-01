@@ -52,7 +52,7 @@ export function TopNavbarClient({
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-800 bg-slate-950/95 px-4 py-4 backdrop-blur lg:hidden">
+    <header className="misk-header sticky top-0 z-30 border-b px-4 py-4 backdrop-blur lg:hidden">
       <div className="flex items-center justify-between gap-4">
         <div className="flex min-w-0 items-center gap-3">
           <button
@@ -84,13 +84,13 @@ export function TopNavbarClient({
           <div className="mb-3 flex items-center gap-3 border-b border-slate-800 px-2 pb-3">
             <Image
               src="/logo.png"
-              alt="وصل للتطور المالي"
+              alt="مسك للتطور المالي"
               width={40}
               height={40}
-              className="h-10 w-10 object-contain"
+              className="misk-brand-mark h-10 w-10 object-cover"
             />
             <div>
-              <p className="text-xs font-black text-white">وصل للتطور المالي</p>
+              <p className="text-xs font-black text-white">مسك للتطور المالي</p>
               <p className="text-xs text-slate-400">روابط المنصة</p>
             </div>
           </div>

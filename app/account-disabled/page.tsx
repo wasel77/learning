@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Mail, ShieldX } from "lucide-react";
 import { AccountDisabledActions } from "@/components/AccountDisabledActions";
 import { Card } from "@/components/ui/card";
@@ -32,6 +33,13 @@ export default async function AccountDisabledPage() {
       <div className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-5xl place-items-center">
         <Card className="relative w-full max-w-xl overflow-hidden p-8 text-center">
           <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-l from-red-400 via-blue-600 to-cyan-300" />
+          <Image
+            src="/logo.png"
+            alt="MISK"
+            width={56}
+            height={56}
+            className="misk-brand-mark mx-auto mb-5 h-14 w-14 object-cover"
+          />
           <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-red-500/15 text-red-300 shadow-lg shadow-red-950/30">
             <ShieldX className="h-8 w-8" />
           </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { signIn, signUp } from "@/lib/actions";
@@ -14,6 +15,13 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
 
   return (
     <Card className="w-full max-w-md p-6">
+      <Image
+        src="/logo.png"
+        alt="MISK"
+        width={64}
+        height={64}
+        className="misk-brand-mark mb-5 h-16 w-16 object-cover"
+      />
       <h1 className="text-2xl font-black text-white">{mode === "login" ? "تسجيل الدخول" : "إنشاء حساب"}</h1>
       <p className="mt-2 text-sm text-slate-400">
         {mode === "login" ? "ادخل إلى مسارك التعليمي." : "سيتم إرسال رسالة تأكيد عبر Supabase SMTP."}

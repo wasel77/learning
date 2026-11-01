@@ -80,9 +80,9 @@ export default async function Home() {
             alt="تعلم التداول"
             width={44}
             height={44}
-            className="h-11 w-11 object-contain"
+            className="misk-brand-mark h-11 w-11 object-cover"
           />
-          <span className="text-lg font-black"> وصل للتطور المالي </span>
+          <span className="text-lg font-black"> مسك للتطور المالي </span>
         </Link>
         <div className="flex gap-3">
           <Link

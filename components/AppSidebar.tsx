@@ -38,18 +38,18 @@ export function AppSidebar({ profile }: { profile: Profile }) {
   const links = getNavLinks(profile.role);
 
   return (
-    <header className="sticky top-0 z-40 hidden border-b border-slate-800 bg-slate-950/95 px-5 py-2.5 backdrop-blur lg:block">
+    <header className="misk-header sticky top-0 z-40 hidden border-b px-5 py-2.5 backdrop-blur lg:block">
       <div className="mx-auto flex max-w-7xl items-center gap-4">
         <Link href="/dashboard" className="flex shrink-0 items-center gap-2.5">
           <Image
             src="/logo.png"
-            alt="وصل للتطور المالي"
+            alt="مسك للتطور المالي"
             width={38}
             height={38}
-            className="h-10 w-10 object-contain"
+            className="misk-brand-mark h-10 w-10 object-cover"
           />
           <div>
-            <p className="text-xs font-black text-white">وصل للتطور المالي</p>
+            <p className="text-xs font-black text-white">مسك للتطور المالي</p>
             <p className="text-[10px] text-slate-400">وجهتك الاولى للاستثمار</p>
           </div>
         </Link>
