@@ -4,8 +4,8 @@ const baseUrl = Deno.env.get("SUPABASE_URL")!;
 const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const resendKey = Deno.env.get("RESEND_API_KEY");
 const siteUrl = "https://miskacademy.online";
-const from = "أكاديمية مسك للتطور المالي <notifications@miskacademy.online>";
-const replyTo = "thewtofficial@gmail.com";
+const from = "أكاديمية مسك للتطور المالي <noreply@miskacademy.online>";
+const replyTo = "noreply@miskacademy.online";
 
 const bronzeRenewal = "https://miskpay.site/تجديد-الستارت/p1776842469";
 const diamondRenewal = "https://miskpay.site/تجديد-الرويال/p752548395";
@@ -61,9 +61,9 @@ function render(row: EmailRow) {
   <h1 style="margin-top:0;margin-right:0;margin-bottom:14px;margin-left:0;font-family:Arial,Helvetica,sans-serif;font-size:24px;line-height:36px;font-weight:700;color:#0f172a;">${escapeHtml(row.subject.split("|")[0].trim())}</h1>
   <p style="margin-top:0;margin-right:0;margin-bottom:20px;margin-left:0;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:28px;color:#334155;">${body}</p>
   ${note ? `<p style="margin-top:0;margin-right:0;margin-bottom:20px;margin-left:0;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:25px;color:#475569;background-color:#fff7ed;border-right:4px solid #d6a84b;padding-top:12px;padding-right:14px;padding-bottom:12px;padding-left:14px;">${note}</p>` : ""}
-  ${buttons}<p style="margin-top:24px;margin-right:0;margin-bottom:0;margin-left:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:21px;color:#64748b;">هذه رسالة تلقائية من أكاديمية مسك للتطور المالي. للرد أو الاستفسار استخدمي Reply على هذه الرسالة.</p>
+  ${buttons}<p style="margin-top:24px;margin-right:0;margin-bottom:0;margin-left:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:21px;color:#64748b;">هذه رسالة تلقائية من أكاديمية مسك للتطور المالي وغير مخصصة للرد.</p>
   </td></tr></table></td></tr></table></body></html>`;
-  const text = `${greeting}\n\n${row.subject.split("|")[0].trim()}\n\n${String(row.payload.body ?? "")}${packageNote(row) ? `\n\n${packageNote(row)}` : ""}\n\n${ctas(row).map((c) => `${c.label}: ${c.url}`).join("\n")}\n\nأكاديمية مسك للتطور المالي`;
+  const text = `${greeting}\n\n${row.subject.split("|")[0].trim()}\n\n${String(row.payload.body ?? "")}${packageNote(row) ? `\n\n${packageNote(row)}` : ""}\n\n${ctas(row).map((c) => `${c.label}: ${c.url}`).join("\n")}\n\nأكاديمية مسك للتطور المالي\nهذه رسالة تلقائية وغير مخصصة للرد.`;
   return { html, text };
 }
 
