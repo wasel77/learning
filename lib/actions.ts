@@ -67,7 +67,7 @@ export async function signUp(_state: ActionState, formData: FormData): Promise<A
     : "bronze";
 
   try {
-    const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+    const siteUrl = "https://miskacademy.online";
     const { error } = await supabase.auth.signUp({
       email,
       password,
