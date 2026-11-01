@@ -139,12 +139,12 @@ export default async function PrivateClassesPage() {
         <section className="mt-8 rounded-3xl border border-amber-400/25 bg-gradient-to-l from-amber-500/10 to-slate-900 p-8 text-center">
           <Lock className="mx-auto h-12 w-12 text-amber-300" />
           <h2 className="mt-4 text-2xl font-black">
-            الكلاسات الخاصة حصرية للألماسي 💎
+            الكلاسات الخاصة حصرية لرويال 💎
           </h2>
           <p className="mx-auto mt-3 max-w-xl leading-8 text-slate-300">
             4 جلسات خاصة شهريًا مع كوتش تختارينها، وحجز الموعد المناسب لك.
             <br />
-            رقّي للألماسي لفتح الميزة.
+            رقّي لرويال لفتح الميزة.
           </p>
           <a
             href={DIAMOND_UPGRADE_URL}
@@ -152,7 +152,7 @@ export default async function PrivateClassesPage() {
             rel="noreferrer"
             className="mt-5 inline-flex h-11 items-center justify-center rounded-xl bg-amber-300 px-5 text-sm font-black text-amber-950 transition hover:bg-amber-200"
           >
-            الترقية للألماسية
+            الترقية لرويال
           </a>
         </section>
       ) : (

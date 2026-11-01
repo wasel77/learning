@@ -27,7 +27,7 @@ export async function bookPrivateClass(
   try {
     const profile = await getProfile();
     if (profile.subscription_package !== "diamond")
-      return { error: "الكلاسات الخاصة حصرية للألماسي 💎" };
+      return { error: "الكلاسات الخاصة حصرية لرويال 💎" };
     const supabase = await createClient();
     const { error } = await supabase.rpc("book_private_class", {
       target_coach: String(formData.get("coach_id") ?? ""),

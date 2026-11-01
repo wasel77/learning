@@ -134,7 +134,7 @@ body {
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--theme-accent) 28%, transparent);
   border-radius: 0.9rem;
-  background: #071612;
+  background: #ffffff;
   box-shadow: 0 8px 22px rgba(7, 22, 18, 0.22);
 }
 

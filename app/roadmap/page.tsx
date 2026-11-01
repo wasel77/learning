@@ -306,7 +306,7 @@ export default async function RoadmapPage() {
                               </h4>
                               <p className="mt-1 text-sm text-slate-400">
                                 {packageLocked
-                                  ? "حصري للألماسي"
+                                  ? "حصري لرويال"
                                   : locked
                                     ? "اجتز اختبار الدرس السابق 100% لفتحه"
                                     : "اضغط لفتح الدرس"}
@@ -318,7 +318,7 @@ export default async function RoadmapPage() {
                                   rel="noreferrer"
                                   className="mt-3 inline-flex rounded-lg bg-amber-300 px-3 py-2 text-xs font-black text-amber-950"
                                 >
-                                  الترقية للألماسية
+                                  الترقية لرويال
                                 </a>
                               ) : null}
                             </div>
@@ -400,14 +400,14 @@ export default async function RoadmapPage() {
                           </p>
                           {diamondExclusive ? (
                             <div className="mt-3 max-w-xl rounded-xl border border-amber-400/25 bg-amber-400/10 p-3 text-sm font-bold leading-7 text-amber-100">
-                              <p>دروس محترف حصرية للألماسي 💎 رقّي للألماسي لفتح المستوى.</p>
+                              <p>دروس محترف حصرية لرويال 💎 رقّي لرويال لفتح المستوى.</p>
                               <a
                                 href={DIAMOND_UPGRADE_URL}
                                 target="_blank"
                                 rel="noreferrer"
                                 className="mt-3 inline-flex rounded-lg bg-amber-300 px-3 py-2 text-xs font-black text-amber-950"
                               >
-                                الترقية للألماسية
+                                الترقية لرويال
                               </a>
                             </div>
                           ) : <p className="mt-3 text-sm font-bold text-slate-300">{levelCompleted} من {levelLessons.length} مكتمل</p>}
@@ -424,7 +424,7 @@ export default async function RoadmapPage() {
                           {levelLessons.length}
                         </p>
                         <p className="mt-1 text-sm text-slate-400">
-                          {diamondExclusive ? "حصري للألماسي" : unlocked ? "متاح" : isFuture ? "قادم" : "سابق"}
+                          {diamondExclusive ? "حصري لرويال" : unlocked ? "متاح" : isFuture ? "قادم" : "سابق"}
                         </p>
                       </div>
                     </div>

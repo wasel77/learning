@@ -18,9 +18,9 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
       <Image
         src="/logo.png"
         alt="MISK"
-        width={64}
-        height={64}
-        className="misk-brand-mark mb-5 h-16 w-16 object-cover"
+        width={80}
+        height={80}
+        className="misk-brand-mark mb-5 h-20 w-20 object-contain"
       />
       <h1 className="text-2xl font-black text-white">{mode === "login" ? "تسجيل الدخول" : "إنشاء حساب"}</h1>
       <p className="mt-2 text-sm text-slate-400">
@@ -38,8 +38,8 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
               defaultValue="bronze"
               className="h-11 w-full rounded-xl border border-slate-700 bg-slate-950/70 px-4 text-sm text-slate-50 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20"
             >
-              <option value="bronze">الباقة البرونزية</option>
-              <option value="diamond">الباقة الماسية</option>
+              <option value="bronze">باقة ستارت</option>
+              <option value="diamond">باقة رويال</option>
             </select>
           </div>
         ) : null}

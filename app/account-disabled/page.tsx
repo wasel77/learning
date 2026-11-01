@@ -36,9 +36,9 @@ export default async function AccountDisabledPage() {
           <Image
             src="/logo.png"
             alt="MISK"
-            width={56}
-            height={56}
-            className="misk-brand-mark mx-auto mb-5 h-14 w-14 object-cover"
+            width={64}
+            height={64}
+            className="misk-brand-mark mx-auto mb-5 h-16 w-16 object-contain"
           />
           <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-red-500/15 text-red-300 shadow-lg shadow-red-950/30">
             <ShieldX className="h-8 w-8" />
@@ -70,7 +70,7 @@ export default async function AccountDisabledPage() {
               rel="noreferrer"
               className="mt-4 inline-flex h-12 w-full items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-black text-white transition hover:bg-blue-500"
             >
-              تجديد الاشتراك
+              تجديد رويال
             </a>
           ) : subscriptionPackage === "bronze" ? (
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -80,7 +80,7 @@ export default async function AccountDisabledPage() {
                 rel="noreferrer"
                 className="inline-flex h-12 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-black text-white transition hover:bg-blue-500"
               >
-                تجديد البرونزية
+                تجديد ستارت
               </a>
               <a
                 href={DIAMOND_UPGRADE_URL}
@@ -88,7 +88,7 @@ export default async function AccountDisabledPage() {
                 rel="noreferrer"
                 className="inline-flex h-12 items-center justify-center rounded-xl border border-amber-400/40 bg-amber-400/10 px-5 text-sm font-black text-amber-200 transition hover:bg-amber-400/20"
               >
-                الترقية للألماسية
+                الترقية لرويال
               </a>
             </div>
           ) : (

@@ -40,14 +40,14 @@ function LessonCardContent({ lesson }: { lesson: Lesson }) {
       <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-400">{lesson.description}</p>
       {packageLocked ? (
         <div className="mt-4 rounded-xl border border-amber-400/20 bg-amber-400/10 p-3 text-xs font-bold leading-5 text-amber-200">
-          <p>هذه الميزة غير متاحة لباقتك الحالية. هذا المحتوى حصري للألماسي 💎</p>
+          <p>هذه الميزة غير متاحة لباقتك الحالية. هذا المحتوى حصري لرويال 💎</p>
           <a
             href={DIAMOND_UPGRADE_URL}
             target="_blank"
             rel="noreferrer"
             className="mt-3 inline-flex rounded-lg bg-amber-300 px-3 py-2 text-xs font-black text-amber-950"
           >
-            الترقية للألماسية
+            الترقية لرويال
           </a>
         </div>
       ) : locked ? (

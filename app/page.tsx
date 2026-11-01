@@ -41,17 +41,17 @@ const stats = [
 
 const subscriptionPackages = [
   {
-    title: "الباقة الالماسية",
+    title: "باقة رويال",
     description: "تجربة تعليمية موسعة لمن يريد متابعة أعمق ومسارا أكثر كثافة.",
-    href: "https://thewtofficial.com/%D8%A7%D9%84%D8%A8%D8%A7%D9%82%D8%A9-%D8%A7%D9%84%D8%A7%D9%84%D9%85%D8%A7%D8%B3%D9%8A%D8%A9/p925399206",
+    href: "https://miskpay.site/الباقة-الالماسية/p925399206",
     icon: Gem,
     tone: "from-sky-400/25 to-blue-600/10",
     badge: "الأكثر تميزا",
   },
   {
-    title: "الباقة البرونزية",
+    title: "باقة ستارت",
     description: "اختيار مناسب للبدء في رحلة منظمة داخل المنصة.",
-    href: "https://thewtofficial.com/%D8%A7%D9%84%D8%A8%D8%A7%D9%82%D8%A9-%D8%A7%D9%84%D8%A8%D8%B1%D9%88%D9%86%D8%B2%D9%8A%D8%A9/p7771254",
+    href: "https://miskpay.site/الباقة-البرونزيه/p1016013833",
     icon: Medal,
     tone: "from-amber-400/20 to-orange-700/10",
     badge: "ابدأ الآن",
@@ -78,9 +78,9 @@ export default async function Home() {
           <Image
             src="/logo.png"
             alt="تعلم التداول"
-            width={44}
-            height={44}
-            className="misk-brand-mark h-11 w-11 object-cover"
+            width={56}
+            height={56}
+            className="misk-brand-mark h-14 w-14 object-contain"
           />
           <span className="text-lg font-black"> مسك للتطور المالي </span>
         </Link>

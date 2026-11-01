@@ -67,8 +67,8 @@ function PackageScopeSelect({
     <div>
       <label className="mb-2 block text-sm font-bold text-slate-300">الباقة المستهدفة</label>
       <select name="package_access" defaultValue={defaultValue} className={selectClassName} required>
-        <option value="bronze">الباقة البرونزية</option>
-        <option value="diamond">الباقة الماسية</option>
+        <option value="bronze">باقة ستارت</option>
+        <option value="diamond">باقة رويال</option>
         <option value="both">كلا الباقتين</option>
       </select>
     </div>
@@ -367,8 +367,8 @@ export function AdminForm({
               <div>
                 <label className="mb-2 block text-sm font-bold text-slate-300">الباقة المستهدفة</label>
                 <select name="target_package" defaultValue="both" className={selectClassName} required>
-                  <option value="bronze">الباقة البرونزية</option>
-                  <option value="diamond">الباقة الماسية</option>
+                  <option value="bronze">باقة ستارت</option>
+                  <option value="diamond">باقة رويال</option>
                   <option value="both">كلا الباقتين</option>
                 </select>
               </div>

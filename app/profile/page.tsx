@@ -14,7 +14,7 @@ export default async function ProfilePage() {
           <LevelBadge level={profile.level} />
           <span className="rounded-full bg-slate-800 px-3 py-1 text-xs">{profile.role === "admin" ? "مدير" : "عضو"}</span>
           <span className="rounded-full bg-amber-400/10 px-3 py-1 text-xs font-bold text-amber-200">
-            الباقة {getSubscriptionPackageLabel(profile.subscription_package)}
+            باقة {getSubscriptionPackageLabel(profile.subscription_package)}
           </span>
         </div>
         <dl className="mt-8 grid gap-4">

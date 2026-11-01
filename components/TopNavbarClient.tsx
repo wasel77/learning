@@ -85,9 +85,9 @@ export function TopNavbarClient({
             <Image
               src="/logo.png"
               alt="مسك للتطور المالي"
-              width={40}
-              height={40}
-              className="misk-brand-mark h-10 w-10 object-cover"
+              width={48}
+              height={48}
+              className="misk-brand-mark h-12 w-12 object-contain"
             />
             <div>
               <p className="text-xs font-black text-white">مسك للتطور المالي</p>
