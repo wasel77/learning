@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { BookOpenCheck, CalendarDays, Gem, LineChart, Medal, ShieldCheck } from "lucide-react";
 import { MarketChart } from "@/components/MarketChart";
-import { SuccessStoryCard } from "@/components/SuccessStoryCard";
+import { SuccessStoriesSection } from "@/components/SuccessStoriesSection";
 import { buttonClassName } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
 import type { SuccessStory } from "@/lib/types";
@@ -28,9 +28,8 @@ const faqs = [
 
 export default async function Home() {
   const supabase = await createClient();
-  const { data: stories, error: storiesError } = await supabase.from("success_stories").select("*").eq("is_published", true).order("created_at", { ascending: false });
+  const { data: stories } = await supabase.from("success_stories").select("*").eq("is_published", true).order("created_at", { ascending: false });
   const publishedStories = (stories ?? []) as SuccessStory[];
-  if (storiesError) console.error("Public success stories query failed", storiesError.code, storiesError.message);
 
   return <main className="public-home min-h-screen overflow-hidden bg-[#020617] text-slate-50" dir="rtl">
     <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-6">
@@ -54,7 +53,7 @@ export default async function Home() {
 
     <section id="plans" className="section-band scroll-mt-24"><div className="mx-auto max-w-7xl px-5 py-16"><div className="mb-6"><p className="text-sm font-bold text-sky-300">باقات الاشتراك</p><h2 className="mt-2 text-3xl font-black text-white">اختر الباقة المناسبة لك</h2></div><div className="grid gap-5 md:grid-cols-2">{subscriptionPackages.map((item)=><div key={item.title} className={`rounded-3xl border border-slate-800 bg-gradient-to-br ${item.tone} p-6 shadow-2xl shadow-blue-950/20 transition hover:-translate-y-1 hover:border-sky-400/40`}><div className="flex items-start justify-between gap-4"><span className="grid h-12 w-12 place-items-center rounded-2xl bg-slate-950/60 text-sky-200"><item.icon className="h-6 w-6" /></span><span className="rounded-full border border-sky-400/30 bg-sky-400/10 px-3 py-1 text-xs font-bold text-sky-100">{item.badge}</span></div><h3 className="mt-6 text-2xl font-black text-white">{item.title}</h3><p className="mt-3 max-w-xl text-sm leading-7 text-slate-300">{item.description}</p><a href={item.href} target="_blank" rel="noreferrer" className={`${buttonClassName("default")} mt-6`}>اشترك الآن</a></div>)}</div><p className="store-note">الاشتراك والدفع يتمان عبر متجر مسك على سلة.</p></div></section>
 
-    <section id="stories" className="mx-auto max-w-7xl scroll-mt-24 px-5 py-16"><div className="mb-6 flex flex-wrap items-end justify-between gap-4"><div><p className="text-sm font-bold text-sky-300">قصص حقيقية من طلابنا</p><h2 className="mt-2 text-3xl font-black text-white">قصص النجاح</h2></div><a href="#plans" className="text-sm font-bold text-sky-300 transition hover:text-sky-200">ابدأ رحلتك الآن</a></div>{publishedStories.length ? <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">{publishedStories.map((story)=><SuccessStoryCard key={story.id} story={story} />)}</div> : <p className="stories-status" data-query-error={storiesError ? "true" : undefined} data-error-code={storiesError?.code}>تعذر تحميل قصص النجاح في بيئة المعاينة.</p>}</section>
+    <section id="stories" className="mx-auto max-w-7xl scroll-mt-24 px-5 py-16"><div className="mb-6 flex flex-wrap items-end justify-between gap-4"><div><p className="text-sm font-bold text-sky-300">قصص حقيقية من طلابنا</p><h2 className="mt-2 text-3xl font-black text-white">قصص النجاح</h2></div><a href="#plans" className="text-sm font-bold text-sky-300 transition hover:text-sky-200">ابدأ رحلتك الآن</a></div><SuccessStoriesSection initialStories={publishedStories} /></section>
     <section className="mx-auto max-w-7xl px-5 pb-16"><div className="disclaimer-card"><p>نتائج فردية تخص أصحابها، وتختلف من شخص لآخر حسب ظروفه ورأس ماله ووقته. لا تمثل نتائج متوقعة ولا تضمن المنصة تحقيق أي أرباح.</p><Link href="/disclaimer">اقرأ إخلاء المسؤولية</Link></div></section>
     <section className="mx-auto max-w-7xl px-5 pb-12"><div className="flex flex-col items-center justify-center rounded-3xl border border-slate-800 bg-[#0F172A]/80 p-8 text-center shadow-2xl shadow-blue-950/20"><Image src="/maroof.png" alt="معروف" width={180} height={126} className="h-auto w-44 object-contain" /><p className="mt-4 text-base font-black text-white">موثقين في معروف : 311971</p></div></section>
 
