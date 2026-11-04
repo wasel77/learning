@@ -14,7 +14,10 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const [state, formAction, pending] = useActionState(action, {});
 
   return (
-    <Card className="w-full max-w-md p-6">
+    <Card className="w-full max-w-md p-7 shadow-2xl">
+      <Link href="/" className="mb-6 inline-flex items-center gap-2 text-sm font-bold text-sky-300">
+        العودة إلى الرئيسية
+      </Link>
       <Image
         src="/logo.png"
         alt="MISK"
@@ -23,8 +26,8 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
         className="misk-brand-mark mb-5 h-20 w-20 object-contain"
       />
       <h1 className="text-2xl font-black text-white">{mode === "login" ? "تسجيل الدخول" : "إنشاء حساب"}</h1>
-      <p className="mt-2 text-sm text-slate-400">
-        {mode === "login" ? "ادخل إلى مسارك التعليمي." : "سيتم إرسال رسالة تأكيد عبر Supabase SMTP."}
+      <p className="mt-2 text-sm leading-7 text-slate-400">
+        {mode === "login" ? "أدخل بريدك وكلمة المرور للوصول إلى مسارك التعليمي ومتابعة تقدّمك." : "سيتم إرسال رسالة تأكيد عبر Supabase SMTP."}
       </p>
       <form action={formAction} className="mt-6 space-y-4">
         {mode === "signup" ? <Input name="full_name" placeholder="الاسم الكامل" required /> : null}
@@ -57,7 +60,13 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
             تسجيل الدخول
           </Link>
         </p>
-      ) : null}
+      ) : (
+        <p className="mt-6 border-t border-slate-800 pt-5 text-center text-sm leading-7 text-slate-400">
+          إذا واجهتك مشكلة في بيانات حسابك بعد الاشتراك، راجع{" "}
+          <Link href="/#faq" className="font-bold text-sky-300">الأسئلة الشائعة</Link>{" "}
+          أو <a href="https://t.me/MISKSupport" target="_blank" rel="noreferrer" className="font-bold text-sky-300">تواصل معنا</a>.
+        </p>
+      )}
     </Card>
   );
 }
