@@ -7,6 +7,7 @@ import { BellRing, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import type { Notification } from "@/lib/types";
+import { replacePackageDisplayNames } from "@/lib/utils";
 
 export function NotificationToast({ userId }: { userId: string }) {
   const [notification, setNotification] = useState<Notification | null>(null);
@@ -77,7 +78,7 @@ export function NotificationToast({ userId }: { userId: string }) {
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-start justify-between gap-3">
-                <h3 className="font-black text-white">{notification.title}</h3>
+                <h3 className="font-black text-white">{replacePackageDisplayNames(notification.title)}</h3>
                 <button
                   type="button"
                   onClick={() => setNotification(null)}
@@ -88,7 +89,7 @@ export function NotificationToast({ userId }: { userId: string }) {
                 </button>
               </div>
               {notification.body ? (
-                <p className="mt-2 text-sm leading-6 text-slate-300">{notification.body}</p>
+                <p className="mt-2 text-sm leading-6 text-slate-300">{replacePackageDisplayNames(notification.body)}</p>
               ) : null}
               <div className="mt-4 flex flex-wrap gap-2">
                 {notification.link_url ? (

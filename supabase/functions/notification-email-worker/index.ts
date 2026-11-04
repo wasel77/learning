@@ -21,6 +21,12 @@ const escapeHtml = (value: unknown) => String(value ?? "")
   .replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
   .replaceAll('"', "&quot;").replaceAll("'", "&#039;");
 
+const packageDisplayNames = (value: unknown) => String(value ?? "")
+  .replaceAll("رويال", "الألماسية")
+  .replaceAll("ستارت", "البرونزية")
+  .replaceAll("Royal", "Diamond")
+  .replaceAll("Start", "Bronze");
+
 function absoluteLink(link: unknown) {
   const value = String(link ?? "");
   return value.startsWith("/") ? `${siteUrl}${value}` : value.startsWith("https://") ? value : siteUrl;
@@ -46,24 +52,25 @@ function packageNote(row: EmailRow) {
 
 function render(row: EmailRow) {
   const greeting = row.full_name ? `أهلًا ${escapeHtml(row.full_name)}،` : "أهلًا بك،";
-  const body = escapeHtml(row.payload.body);
+  const subject = packageDisplayNames(row.subject);
+  const body = escapeHtml(packageDisplayNames(row.payload.body));
   const note = escapeHtml(packageNote(row));
   const buttons = ctas(row).map((cta) => `
     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td align="center" bgcolor="${cta.accent ? "#d6a84b" : "#1d4ed8"}" style="background-color:${cta.accent ? "#d6a84b" : "#1d4ed8"};border-radius:10px;padding-top:13px;padding-right:18px;padding-bottom:13px;padding-left:18px;">
       <a href="${escapeHtml(cta.url)}" style="display:block;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:22px;font-weight:700;color:${cta.accent ? "#172554" : "#ffffff"};text-decoration:none;">${escapeHtml(cta.label)}</a>
     </td></tr></table>`).join('<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td height="10" style="font-size:10px;line-height:10px;color:#ffffff;">&nbsp;</td></tr></table>');
 
-  const html = `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>${escapeHtml(row.subject)}</title></head>
+  const html = `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>${escapeHtml(subject)}</title></head>
   <body style="margin:0;background-color:#f1f5f9;font-family:Arial,Helvetica,sans-serif;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="#f1f5f9" style="background-color:#f1f5f9;"><tr><td align="center" style="padding-top:24px;padding-right:12px;padding-bottom:24px;padding-left:12px;">
   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px;background-color:#ffffff;border-radius:16px;"><tr><td bgcolor="#172554" style="background-color:#172554;border-radius:16px 16px 0 0;padding-top:24px;padding-right:24px;padding-bottom:24px;padding-left:24px;text-align:right;">
   <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:20px;line-height:30px;font-weight:700;color:#ffffff;">أكاديمية مسك للتطور المالي</p></td></tr><tr><td style="padding-top:28px;padding-right:24px;padding-bottom:28px;padding-left:24px;text-align:right;">
   <p style="margin-top:0;margin-right:0;margin-bottom:14px;margin-left:0;font-family:Arial,Helvetica,sans-serif;font-size:17px;line-height:28px;font-weight:700;color:#172554;">${greeting}</p>
-  <h1 style="margin-top:0;margin-right:0;margin-bottom:14px;margin-left:0;font-family:Arial,Helvetica,sans-serif;font-size:24px;line-height:36px;font-weight:700;color:#0f172a;">${escapeHtml(row.subject.split("|")[0].trim())}</h1>
+  <h1 style="margin-top:0;margin-right:0;margin-bottom:14px;margin-left:0;font-family:Arial,Helvetica,sans-serif;font-size:24px;line-height:36px;font-weight:700;color:#0f172a;">${escapeHtml(subject.split("|")[0].trim())}</h1>
   <p style="margin-top:0;margin-right:0;margin-bottom:20px;margin-left:0;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:28px;color:#334155;">${body}</p>
   ${note ? `<p style="margin-top:0;margin-right:0;margin-bottom:20px;margin-left:0;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:25px;color:#475569;background-color:#fff7ed;border-right:4px solid #d6a84b;padding-top:12px;padding-right:14px;padding-bottom:12px;padding-left:14px;">${note}</p>` : ""}
   ${buttons}<p style="margin-top:24px;margin-right:0;margin-bottom:0;margin-left:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:21px;color:#64748b;">هذه رسالة تلقائية من أكاديمية مسك للتطور المالي وغير مخصصة للرد.</p>
   </td></tr></table></td></tr></table></body></html>`;
-  const text = `${greeting}\n\n${row.subject.split("|")[0].trim()}\n\n${String(row.payload.body ?? "")}${packageNote(row) ? `\n\n${packageNote(row)}` : ""}\n\n${ctas(row).map((c) => `${c.label}: ${c.url}`).join("\n")}\n\nأكاديمية مسك للتطور المالي\nهذه رسالة تلقائية وغير مخصصة للرد.`;
+  const text = `${greeting}\n\n${subject.split("|")[0].trim()}\n\n${packageDisplayNames(row.payload.body)}${packageNote(row) ? `\n\n${packageNote(row)}` : ""}\n\n${ctas(row).map((c) => `${c.label}: ${c.url}`).join("\n")}\n\nأكاديمية مسك للتطور المالي\nهذه رسالة تلقائية وغير مخصصة للرد.`;
   return { html, text };
 }
 

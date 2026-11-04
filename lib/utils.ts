@@ -79,6 +79,15 @@ export function getContentPackageScopeLabel(value?: string | null) {
   return "كلا الباقتين";
 }
 
+export function replacePackageDisplayNames(value?: string | null) {
+  if (!value) return value;
+  return value
+    .replaceAll("رويال", "الألماسية")
+    .replaceAll("ستارت", "البرونزية")
+    .replaceAll("Royal", "Diamond")
+    .replaceAll("Start", "Bronze");
+}
+
 export function calculateLevel(percentage: number) {
   if (percentage >= 80) return "expert";
   if (percentage >= 50) return "advanced";
