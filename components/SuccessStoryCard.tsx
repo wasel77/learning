@@ -32,7 +32,7 @@ export function SuccessStoryCard({ story }: { story: SuccessStory }) {
         <p className="mt-3 text-sm leading-7 text-slate-400">{story.description}</p>
         {amount ? (
           <div className="mt-5">
-            <span className="rounded-full bg-blue-600/20 px-3 py-1 text-xs font-bold text-blue-100">
+            <span className="story-amount rounded-full px-3 py-1 text-xs font-bold">
               {amount}
             </span>
           </div>
