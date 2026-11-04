@@ -19,35 +19,6 @@ import type {
 
 type ActionState = { error?: string; success?: string };
 
-type AuthActionError = {
-  code?: string;
-  message?: string;
-  status?: number;
-};
-
-function formatSignUpError(error: AuthActionError): string {
-  const message = error.message?.trim() ?? "";
-  const normalized = message.toLowerCase();
-
-  if (error.code === "over_email_send_rate_limit" || normalized.includes("rate limit")) {
-    return "تم تجاوز عدد محاولات التسجيل المسموح مؤقتًا. حاول مرة أخرى لاحقًا.";
-  }
-  if (error.code === "user_already_exists" || normalized.includes("already registered")) {
-    return "يوجد حساب مسجل بهذا البريد الإلكتروني بالفعل.";
-  }
-  if (error.code === "weak_password" || normalized.includes("password")) {
-    return "كلمة المرور غير مقبولة. استخدم كلمة مرور أقوى ثم حاول مرة أخرى.";
-  }
-  if (error.code === "email_address_invalid" || normalized.includes("invalid email")) {
-    return "البريد الإلكتروني غير صالح. تحقق منه ثم حاول مرة أخرى.";
-  }
-  if (!message || message === "{}" || message === "[object Object]") {
-    return "تعذر إنشاء الحساب حاليًا بسبب مشكلة مؤقتة في خدمة التسجيل. حاول مرة أخرى لاحقًا.";
-  }
-
-  return message;
-}
-
 function isSubscriptionPackage(value: string): value is SubscriptionPackage {
   return value === "bronze" || value === "diamond";
 }
@@ -57,31 +28,8 @@ function isContentPackageScope(value: string): value is ContentPackageScope {
 }
 
 export async function signUp(_state: ActionState, formData: FormData): Promise<ActionState> {
-  const supabase = await createClient();
-  const fullName = String(formData.get("full_name") ?? "").trim();
-  const email = String(formData.get("email") ?? "").trim();
-  const password = String(formData.get("password") ?? "");
-  const requestedPackage = String(formData.get("subscription_package") ?? "bronze");
-  const subscriptionPackage: SubscriptionPackage = isSubscriptionPackage(requestedPackage)
-    ? requestedPackage
-    : "bronze";
-
-  try {
-    const siteUrl = "https://miskacademy.online";
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { full_name: fullName, subscription_package: subscriptionPackage },
-        emailRedirectTo: `${siteUrl}/auth/callback`,
-      },
-    });
-
-    if (error) return { error: formatSignUpError(error) };
-    return { success: "تم إنشاء الحساب. تحقق من بريدك الإلكتروني لتأكيد الحساب." };
-  } catch {
-    return { error: "تعذر الاتصال بخدمة التسجيل حاليًا. حاول مرة أخرى لاحقًا." };
-  }
+  void formData;
+  return { error: "إنشاء الحسابات متاح لإدارة الأكاديمية فقط بعد الاشتراك." };
 }
 
 export async function signIn(_state: ActionState, formData: FormData): Promise<ActionState> {

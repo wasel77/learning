@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+
 const candles: Array<[number, number, number, boolean]> = [
   [62, 18, 14, true], [58, 26, 18, false], [55, 20, 16, true],
   [51, 29, 21, true], [48, 22, 17, false], [44, 32, 23, true],
@@ -6,8 +10,22 @@ const candles: Array<[number, number, number, boolean]> = [
 ];
 
 export function MarketChart() {
+  const chartRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const node = chartRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.3 },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="market-chart" role="img" aria-label="رسم تعليمي متحرك يوضح شموعاً يابانية وخط اتجاه صاعد">
+    <div ref={chartRef} className={`market-chart ${isVisible ? "chart-is-visible" : ""}`} role="img" aria-label="رسم تعليمي متحرك يوضح شموعاً يابانية وخط اتجاه صاعد">
       <div className="mb-4 flex items-center justify-between">
         <p className="font-bold text-slate-100">نظرة تعليمية على السوق</p>
         <span className="text-sm text-sky-300">تعلم • طبّق • تقدّم</span>
@@ -30,7 +48,7 @@ export function MarketChart() {
           const x = 52 + index * 56;
           const y = top * 3.1;
           return (
-            <g key={index} className="chart-candle" style={{ animationDelay: `${index * 85}ms` }}>
+            <g key={index} className="chart-candle" style={{ "--candle-delay": `${index * 100}ms` } as CSSProperties}>
               <line x1={x} y1={y - 12} x2={x} y2={y + range * 1.45} className={up ? "candle-up" : "candle-down"} />
               <rect x={x - 8} y={y} width="16" height={body * 1.35} rx="2" className={up ? "candle-up-fill" : "candle-down-fill"} />
             </g>

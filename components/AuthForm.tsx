@@ -14,10 +14,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const [state, formAction, pending] = useActionState(action, {});
 
   return (
-    <Card className="w-full max-w-md p-7 shadow-2xl">
-      <Link href="/" className="mb-6 inline-flex items-center gap-2 text-sm font-bold text-sky-300">
-        العودة إلى الرئيسية
-      </Link>
+    <Card className="w-full max-w-md p-6">
       <Image
         src="/logo.png"
         alt="MISK"
@@ -32,7 +29,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
       <form action={formAction} className="mt-6 space-y-4">
         {mode === "signup" ? <Input name="full_name" placeholder="الاسم الكامل" required /> : null}
         <Input name="email" type="email" placeholder="البريد الإلكتروني" required />
-        <Input name="password" type="password" placeholder="كلمة المرور" required minLength={6} />
+        {mode === "login" ? <div><div className="mb-2 flex items-center justify-between gap-3"><span className="text-sm font-bold text-slate-300">كلمة المرور</span><Link href="/forgot-password" className="text-sm font-bold text-sky-300 hover:text-sky-200">نسيت كلمة المرور؟</Link></div><Input name="password" type="password" placeholder="كلمة المرور" required minLength={6} /></div> : <Input name="password" type="password" placeholder="كلمة المرور" required minLength={6} />}
         {mode === "signup" ? (
           <div>
             <label className="mb-2 block text-sm font-bold text-slate-300">باقة العضو</label>
@@ -62,7 +59,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
         </p>
       ) : (
         <p className="mt-6 border-t border-slate-800 pt-5 text-center text-sm leading-7 text-slate-400">
-          إذا واجهتك مشكلة في بيانات حسابك بعد الاشتراك، راجع{" "}
+          الحسابات تُنشأ من إدارة المنصة. إذا لم يصلك حسابك بعد الاشتراك، راجع{" "}
           <Link href="/#faq" className="font-bold text-sky-300">الأسئلة الشائعة</Link>{" "}
           أو <a href="https://t.me/MISKSupport" target="_blank" rel="noreferrer" className="font-bold text-sky-300">تواصل معنا</a>.
         </p>
