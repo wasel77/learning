@@ -70,12 +70,12 @@ export function getLevelLabel(level?: string | null) {
 }
 
 export function getSubscriptionPackageLabel(value?: string | null) {
-  return value === "diamond" ? "رويال" : "ستارت";
+  return value === "diamond" ? "الألماسية" : "البرونزية";
 }
 
 export function getContentPackageScopeLabel(value?: string | null) {
-  if (value === "diamond") return "رويال";
-  if (value === "bronze") return "ستارت";
+  if (value === "diamond") return "الألماسية";
+  if (value === "bronze") return "البرونزية";
   return "كلا الباقتين";
 }
 

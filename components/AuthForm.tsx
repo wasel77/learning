@@ -38,8 +38,8 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
               defaultValue="bronze"
               className="h-11 w-full rounded-xl border border-slate-700 bg-slate-950/70 px-4 text-sm text-slate-50 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20"
             >
-              <option value="bronze">باقة ستارت</option>
-              <option value="diamond">باقة رويال</option>
+              <option value="bronze">باقة البرونزية</option>
+              <option value="diamond">باقة الألماسية</option>
             </select>
           </div>
         ) : null}

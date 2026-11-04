@@ -31,8 +31,8 @@ function PackageEditor({ user }: { user: Profile }) {
         className={selectClassName}
         aria-label={`باقة ${user.full_name || user.email || "العضو"}`}
       >
-        <option value="bronze">ستارت</option>
-        <option value="diamond">رويال</option>
+        <option value="bronze">البرونزية</option>
+        <option value="diamond">الألماسية</option>
       </select>
       <Button size="sm" variant="secondary" disabled={pending}>
         {pending ? "جارٍ الحفظ..." : "تحديث الباقة"}
@@ -256,8 +256,8 @@ export function AdminUsersManager({
             className={selectClassName}
           >
             <option value="all">كل الباقات</option>
-            <option value="bronze">ستارت</option>
-            <option value="diamond">رويال</option>
+            <option value="bronze">البرونزية</option>
+            <option value="diamond">الألماسية</option>
           </select>
         </div>
         <div>

@@ -7,9 +7,9 @@ const siteUrl = "https://miskacademy.online";
 const from = "أكاديمية مسك للتطور المالي <noreply@miskacademy.online>";
 const replyTo = "noreply@miskacademy.online";
 
-const bronzeRenewal = "https://miskpay.site/تجديد-الستارت/p1776842469";
-const diamondRenewal = "https://miskpay.site/تجديد-الرويال/p752548395";
-const diamondUpgrade = "https://miskpay.site/الترقيه/c3822025";
+const bronzeRenewal = "https://miskpay.site/تجديد-البرونزيه/p1776842469";
+const diamondRenewal = "https://miskpay.site/تجديد-الالماسيه/p752548395";
+const diamondUpgrade = "https://miskpay.site/الترقيه-للالماسيه/p927835383";
 
 type EmailRow = {
   id: string; email: string; full_name: string | null; subscription_package: string;
@@ -32,15 +32,15 @@ function ctas(row: EmailRow) {
   }
   if (row.subscription_package === "diamond") return [{ label: "تجديد الاشتراك", url: diamondRenewal }];
   if (row.subscription_package === "bronze") return [
-    { label: "تجديد ستارت", url: bronzeRenewal },
-    { label: "الترقية إلى رويال", url: diamondUpgrade, accent: true },
+    { label: "تجديد البرونزية", url: bronzeRenewal },
+    { label: "الترقية إلى الألماسية", url: diamondUpgrade, accent: true },
   ];
   return [];
 }
 
 function packageNote(row: EmailRow) {
   return row.template_key.startsWith("subscription_") && row.subscription_package === "bronze"
-    ? "الترقية إلى رويال تفتح لك المزايا الإضافية الموجودة في الأكاديمية، ومنها الكلاسات الخاصة ومستوى محترف والاستراتيجيات الخاصة برويال."
+    ? "الترقية إلى الألماسية تفتح لك المزايا الإضافية الموجودة في الأكاديمية، ومنها الكلاسات الخاصة ومستوى محترف والاستراتيجيات الخاصة بالألماسية."
     : "";
 }
 

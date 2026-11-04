@@ -70,7 +70,7 @@ export default async function AccountDisabledPage() {
               rel="noreferrer"
               className="mt-4 inline-flex h-12 w-full items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-black text-white transition hover:bg-blue-500"
             >
-              تجديد رويال
+              تجديد الألماسية
             </a>
           ) : subscriptionPackage === "bronze" ? (
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -80,7 +80,7 @@ export default async function AccountDisabledPage() {
                 rel="noreferrer"
                 className="inline-flex h-12 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-black text-white transition hover:bg-blue-500"
               >
-                تجديد ستارت
+                تجديد البرونزية
               </a>
               <a
                 href={DIAMOND_UPGRADE_URL}
@@ -88,7 +88,7 @@ export default async function AccountDisabledPage() {
                 rel="noreferrer"
                 className="inline-flex h-12 items-center justify-center rounded-xl border border-amber-400/40 bg-amber-400/10 px-5 text-sm font-black text-amber-200 transition hover:bg-amber-400/20"
               >
-                الترقية لرويال
+                الترقية للألماسية
               </a>
             </div>
           ) : (

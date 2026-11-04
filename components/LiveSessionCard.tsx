@@ -75,7 +75,7 @@ export function LiveSessionCard({ session, now }: { session: LiveSession; now: n
                   rel="noreferrer"
                   className="mt-3 inline-flex rounded-lg bg-amber-300 px-3 py-2 text-xs font-black text-amber-950"
                 >
-                  الترقية لرويال
+                  الترقية للألماسية
                 </a>
               ) : null}
             </div>
