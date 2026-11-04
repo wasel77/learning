@@ -22,6 +22,8 @@ const escapeHtml = (value: unknown) => String(value ?? "")
   .replaceAll('"', "&quot;").replaceAll("'", "&#039;");
 
 const packageDisplayNames = (value: unknown) => String(value ?? "")
+  .replaceAll("الرويال", "الألماسية")
+  .replaceAll("الستارت", "البرونزية")
   .replaceAll("رويال", "الألماسية")
   .replaceAll("ستارت", "البرونزية")
   .replaceAll("Royal", "Diamond")

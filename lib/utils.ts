@@ -82,6 +82,8 @@ export function getContentPackageScopeLabel(value?: string | null) {
 export function replacePackageDisplayNames(value?: string | null) {
   if (!value) return value;
   return value
+    .replaceAll("الرويال", "الألماسية")
+    .replaceAll("الستارت", "البرونزية")
     .replaceAll("رويال", "الألماسية")
     .replaceAll("ستارت", "البرونزية")
     .replaceAll("Royal", "Diamond")
