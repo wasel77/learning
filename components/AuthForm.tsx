@@ -4,13 +4,14 @@ import { useActionState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { signIn, signUp } from "@/lib/actions";
+import { signIn } from "@/lib/actions";
+import { adminCreateUser } from "@/lib/admin-signup-actions";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
 export function AuthForm({ mode }: { mode: "login" | "signup" }) {
-  const action = mode === "login" ? signIn : signUp;
+  const action = mode === "login" ? signIn : adminCreateUser;
   const [state, formAction, pending] = useActionState(action, {});
 
   return (
