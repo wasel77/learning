@@ -12,6 +12,7 @@ const protectedPrefixes = [
   "/success-stories",
   "/profile",
   "/admin",
+  "/signup",
   "/private-classes",
   "/coach/private-classes",
 ];
@@ -20,7 +21,7 @@ export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-  const publicPaths = ["/", "/login", "/signup", "/auth/callback", "/account-disabled"];
+  const publicPaths = ["/", "/login", "/auth/callback", "/account-disabled"];
   const isPublicPath = publicPaths.includes(request.nextUrl.pathname);
 
   if (request.nextUrl.pathname === "/account-disabled") {
@@ -83,7 +84,7 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (user && ["/login", "/signup"].includes(request.nextUrl.pathname)) {
+  if (user && request.nextUrl.pathname === "/login") {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
     return NextResponse.redirect(url);
